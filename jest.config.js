@@ -15,6 +15,7 @@ const customJestConfig = {
     "^@/components/(.*)$": "<rootDir>/src/components/$1",
     "^@/pages/(.*)$": "<rootDir>/src/pages/$1",
     "^@/styles/(.*)$": "<rootDir>/src/styles/$1",
+    "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
   },
   testEnvironment: "jest-environment-jsdom",
   // Optional: Extend Jest with custom matchers

@@ -13,6 +13,7 @@ const Component = styled("div")`
   border: solid 1px #000000;
   padding: 8px;
   margin-bottom: 8px;
+  overflow: hidden;
   ${backgroundDynamicStyle}
 `;
 

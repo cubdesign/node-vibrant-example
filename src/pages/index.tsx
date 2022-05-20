@@ -7,6 +7,7 @@ import { css } from "@emotion/react";
 import ColorSwatch from "@/components/colorSwatch";
 import { ReactNode } from "react";
 import absoluteUrl from "next-absolute-url";
+import { mq } from "@/utils/mq";
 
 type PaletteImage = {
   imagePath: string;
@@ -61,8 +62,12 @@ const Footer = styled("footer")`
 `;
 
 const Image = styled("img")`
-  max-width: 200px;
+  max-width: 100%;
+  max-height: 50vh;
   margin-bottom: 16px;
+  ${mq("sm")} {
+    max-height: 60vh;
+  }
 `;
 
 const ImageWrapper = styled("div")`
@@ -78,7 +83,23 @@ const backgroundDynamicStyle = ({ mainColor }: { mainColor: any }) => {
 const VibrantBlock = styled("div")`
   padding: 16px;
   margin-bottom: 16px;
-  ${backgroundDynamicStyle}
+  width: 100%;
+  ${backgroundDynamicStyle} ${mq("sm")} {
+    display: flex;
+  }
+`;
+
+const ImageBlock = styled("div")`
+  ${mq("sm")} {
+    width: 50%;
+    padding: 1rem;
+  }
+`;
+
+const DetailBlock = styled("div")`
+  ${mq("sm")} {
+    width: 50%;
+  }
 `;
 
 const ColorSwatchBlock = styled("div")`
@@ -86,10 +107,12 @@ const ColorSwatchBlock = styled("div")`
 `;
 
 const JSONViewer = styled("div")`
-  padding: 1rem;
-  color: #ffffff;
+  padding: 2rem;
   line-height: 1.6rem;
-  border: solid 1px #000000;
+
+  code {
+    word-break: break-all;
+  }
 `;
 
 const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
@@ -100,47 +123,57 @@ const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
       key={paletteImage.imageURL}
       mainColor={`rgb(${DarkMuted?.rgb.toString()})`}
     >
-      <ImageWrapper>
-        <Image src={paletteImage.imageURL} alt="image1" />
-      </ImageWrapper>
+      <ImageBlock>
+        <ImageWrapper>
+          <Image src={paletteImage.imageURL} alt="image1" />
+        </ImageWrapper>
+      </ImageBlock>
+      <DetailBlock>
+        <ColorSwatchBlock>
+          {Vibrant ? (
+            <ColorSwatch swatch={Vibrant} label="Vibrant"></ColorSwatch>
+          ) : (
+            ""
+          )}
 
-      <ColorSwatchBlock>
-        {Vibrant ? (
-          <ColorSwatch swatch={Vibrant} label="Vibrant"></ColorSwatch>
-        ) : (
-          ""
-        )}
+          {Muted ? (
+            <ColorSwatch swatch={Muted} label="Muted"></ColorSwatch>
+          ) : (
+            ""
+          )}
 
-        {Muted ? <ColorSwatch swatch={Muted} label="Muted"></ColorSwatch> : ""}
+          {DarkVibrant ? (
+            <ColorSwatch swatch={DarkVibrant} label="DarkVibrant"></ColorSwatch>
+          ) : (
+            ""
+          )}
 
-        {DarkVibrant ? (
-          <ColorSwatch swatch={DarkVibrant} label="DarkVibrant"></ColorSwatch>
-        ) : (
-          ""
-        )}
+          {DarkMuted ? (
+            <ColorSwatch swatch={DarkMuted} label="DarkMuted"></ColorSwatch>
+          ) : (
+            ""
+          )}
 
-        {DarkMuted ? (
-          <ColorSwatch swatch={DarkMuted} label="DarkMuted"></ColorSwatch>
-        ) : (
-          ""
-        )}
+          {LightVibrant ? (
+            <ColorSwatch
+              swatch={LightVibrant}
+              label="LightVibrant"
+            ></ColorSwatch>
+          ) : (
+            ""
+          )}
 
-        {LightVibrant ? (
-          <ColorSwatch swatch={LightVibrant} label="LightVibrant"></ColorSwatch>
-        ) : (
-          ""
-        )}
+          {LightMuted ? (
+            <ColorSwatch swatch={LightMuted} label="LightMuted"></ColorSwatch>
+          ) : (
+            ""
+          )}
+        </ColorSwatchBlock>
 
-        {LightMuted ? (
-          <ColorSwatch swatch={LightMuted} label="LightMuted"></ColorSwatch>
-        ) : (
-          ""
-        )}
-      </ColorSwatchBlock>
-
-      <JSONViewer>
-        <code>{JSON.stringify(paletteImage.palette)}</code>
-      </JSONViewer>
+        <JSONViewer>
+          <code>{JSON.stringify(paletteImage.palette)}</code>
+        </JSONViewer>
+      </DetailBlock>
     </VibrantBlock>
   );
 };
