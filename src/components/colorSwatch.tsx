@@ -4,7 +4,6 @@ import { Swatch } from "@vibrant/color";
 import { ReactNode } from "react";
 
 const backgroundDynamicStyle = ({ rgb }: { rgb: any }) => {
-  console.log(rgb);
   return css`
     background-color: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});
   `;

@@ -86,6 +86,8 @@ const JSONViewer = styled("div")`
 `;
 
 const Home: NextPage<HomeProps> = ({ paletteString, imagePath }) => {
+  console.log(paletteString);
+
   const palette: Palette = JSON.parse(paletteString);
   const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
     palette;
