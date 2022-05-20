@@ -5,6 +5,7 @@ import Vibrant from "node-vibrant";
 import path from "path";
 import { Palette, Vec3 } from "@vibrant/color";
 import { css } from "@emotion/react";
+import ColorSwatch from "@/components/colorSwatch";
 
 type HomeProps = {
   paletteString: string;
@@ -52,18 +53,36 @@ const Footer = styled("footer")`
     }
   }
 `;
-const backgroundDynamicStyle = ({ rgb }: { rgb: any }) => {
-  console.log(rgb);
+
+const Image = styled("img")`
+  max-width: 200px;
+  margin-bottom: 16px;
+`;
+
+const ImageWrapper = styled("div")`
+  text-align: center;
+`;
+
+const backgroundDynamicStyle = ({ mainColor }: { mainColor: any }) => {
   return css`
-    background-color: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});
+    background-color: ${mainColor};
   `;
 };
 
-const ColorSwatch = styled("div")`
-  border: solid 1px #000000;
-  padding: 8px;
-  margin-bottom: 8px;
+const VibrantBlock = styled("div")`
+  padding: 16px;
   ${backgroundDynamicStyle}
+`;
+
+const ColorSwatchBlock = styled("div")`
+  padding: 2rem;
+`;
+
+const JSONViewer = styled("div")`
+  padding: 1rem;
+  color: #ffffff;
+  line-height: 1.6rem;
+  border: solid 1px #000000;
 `;
 
 const Home: NextPage<HomeProps> = ({ paletteString, imagePath }) => {
@@ -80,53 +99,62 @@ const Home: NextPage<HomeProps> = ({ paletteString, imagePath }) => {
 
       <Main>
         <Title>Welcome to node-vibrant example</Title>
+
         <p>サンプルです。</p>
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: `rgb(${Vibrant?.rgb.toString()})`,
-          }}
-        >
-          <div>
-            <img
-              src={imagePath}
-              alt="image1"
-              style={{
-                maxWidth: "200px",
-                marginBottom: "16px",
-              }}
-            />
-          </div>
-          <div>
-            <ColorSwatch rgb={Vibrant?.rgb}>
-              Vibrant: {Vibrant?.rgb.toString()}
-            </ColorSwatch>
 
-            <ColorSwatch rgb={Muted?.rgb}>
-              Vibrant: {Muted?.rgb.toString()}
-            </ColorSwatch>
+        <VibrantBlock mainColor={`rgb(${DarkVibrant?.rgb.toString()})`}>
+          <ImageWrapper>
+            <Image src={imagePath} alt="image1" />
+          </ImageWrapper>
 
-            <ColorSwatch rgb={DarkVibrant?.rgb}>
-              Vibrant: {DarkVibrant?.rgb.toString()}
-            </ColorSwatch>
+          <ColorSwatchBlock>
+            {Vibrant ? (
+              <ColorSwatch swatch={Vibrant} label="Vibrant"></ColorSwatch>
+            ) : (
+              ""
+            )}
 
-            <ColorSwatch rgb={DarkMuted?.rgb}>
-              Vibrant: {DarkMuted?.rgb.toString()}
-            </ColorSwatch>
+            {Muted ? (
+              <ColorSwatch swatch={Muted} label="Muted"></ColorSwatch>
+            ) : (
+              ""
+            )}
 
-            <ColorSwatch rgb={LightVibrant?.rgb}>
-              Vibrant: {LightVibrant?.rgb.toString()}
-            </ColorSwatch>
+            {DarkVibrant ? (
+              <ColorSwatch
+                swatch={DarkVibrant}
+                label="DarkVibrant"
+              ></ColorSwatch>
+            ) : (
+              ""
+            )}
 
-            <ColorSwatch rgb={LightMuted?.rgb}>
-              Vibrant: {LightMuted?.rgb.toString()}
-            </ColorSwatch>
-          </div>
+            {DarkMuted ? (
+              <ColorSwatch swatch={DarkMuted} label="DarkMuted"></ColorSwatch>
+            ) : (
+              ""
+            )}
 
-          {/* <pre> */}
-          <code>{paletteString}</code>
-          {/* </pre> */}
-        </div>
+            {LightVibrant ? (
+              <ColorSwatch
+                swatch={LightVibrant}
+                label="LightVibrant"
+              ></ColorSwatch>
+            ) : (
+              ""
+            )}
+
+            {LightMuted ? (
+              <ColorSwatch swatch={LightMuted} label="LightMuted"></ColorSwatch>
+            ) : (
+              ""
+            )}
+          </ColorSwatchBlock>
+
+          <JSONViewer>
+            <code>{paletteString}</code>
+          </JSONViewer>
+        </VibrantBlock>
       </Main>
 
       <Footer>
