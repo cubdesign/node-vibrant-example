@@ -25,3 +25,14 @@ https://github.com/iamcal/emoji-data
 ## テスト環境構築
 
 https://zenn.dev/miruoon_892/articles/e42e64fbb55137
+
+## 参考サイト
+
+node-vibrant を使ったサンプル
+https://codepen.io/kopol/pen/QWjwrPN
+
+色の名前の一覧（古いかも）
+https://github.com/timoxley/colornames
+
+与えられた色の一覧から最も近い色を選択する
+https://github.com/dtao/nearest-color
