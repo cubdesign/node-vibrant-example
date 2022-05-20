@@ -223,6 +223,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { origin } = absoluteUrl(context.req);
 
   const images: string[] = [
+    "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
+    "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
     "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
     "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
     "/images/david-clode-fT2qXggBlks-unsplash.jpg",
