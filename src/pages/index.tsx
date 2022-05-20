@@ -6,10 +6,16 @@ import path from "path";
 import { Palette, Vec3 } from "@vibrant/color";
 import { css } from "@emotion/react";
 import ColorSwatch from "@/components/colorSwatch";
+import { ReactNode } from "react";
+
+type PaletteImage = {
+  publicPath: string;
+  localPath: string;
+  palette: Palette;
+};
 
 type HomeProps = {
-  paletteString: string;
-  imagePath: string;
+  paletteImagesString: string;
 };
 
 const Container = styled("div")`
@@ -71,6 +77,7 @@ const backgroundDynamicStyle = ({ mainColor }: { mainColor: any }) => {
 
 const VibrantBlock = styled("div")`
   padding: 16px;
+  margin-bottom: 16px;
   ${backgroundDynamicStyle}
 `;
 
@@ -85,12 +92,62 @@ const JSONViewer = styled("div")`
   border: solid 1px #000000;
 `;
 
-const Home: NextPage<HomeProps> = ({ paletteString, imagePath }) => {
-  console.log(paletteString);
-
-  const palette: Palette = JSON.parse(paletteString);
+const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
   const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
-    palette;
+    paletteImage.palette;
+  return (
+    <VibrantBlock
+      key={paletteImage.publicPath}
+      mainColor={`rgb(${DarkMuted?.rgb.toString()})`}
+    >
+      <ImageWrapper>
+        <Image src={paletteImage.publicPath} alt="image1" />
+      </ImageWrapper>
+
+      <ColorSwatchBlock>
+        {Vibrant ? (
+          <ColorSwatch swatch={Vibrant} label="Vibrant"></ColorSwatch>
+        ) : (
+          ""
+        )}
+
+        {Muted ? <ColorSwatch swatch={Muted} label="Muted"></ColorSwatch> : ""}
+
+        {DarkVibrant ? (
+          <ColorSwatch swatch={DarkVibrant} label="DarkVibrant"></ColorSwatch>
+        ) : (
+          ""
+        )}
+
+        {DarkMuted ? (
+          <ColorSwatch swatch={DarkMuted} label="DarkMuted"></ColorSwatch>
+        ) : (
+          ""
+        )}
+
+        {LightVibrant ? (
+          <ColorSwatch swatch={LightVibrant} label="LightVibrant"></ColorSwatch>
+        ) : (
+          ""
+        )}
+
+        {LightMuted ? (
+          <ColorSwatch swatch={LightMuted} label="LightMuted"></ColorSwatch>
+        ) : (
+          ""
+        )}
+      </ColorSwatchBlock>
+
+      <JSONViewer>
+        <code>{JSON.stringify(paletteImage.palette)}</code>
+      </JSONViewer>
+    </VibrantBlock>
+  );
+};
+
+const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
+  const paletteImages: PaletteImage[] = JSON.parse(paletteImagesString);
+
   return (
     <Container>
       <Head>
@@ -104,59 +161,9 @@ const Home: NextPage<HomeProps> = ({ paletteString, imagePath }) => {
 
         <p>サンプルです。</p>
 
-        <VibrantBlock mainColor={`rgb(${DarkVibrant?.rgb.toString()})`}>
-          <ImageWrapper>
-            <Image src={imagePath} alt="image1" />
-          </ImageWrapper>
-
-          <ColorSwatchBlock>
-            {Vibrant ? (
-              <ColorSwatch swatch={Vibrant} label="Vibrant"></ColorSwatch>
-            ) : (
-              ""
-            )}
-
-            {Muted ? (
-              <ColorSwatch swatch={Muted} label="Muted"></ColorSwatch>
-            ) : (
-              ""
-            )}
-
-            {DarkVibrant ? (
-              <ColorSwatch
-                swatch={DarkVibrant}
-                label="DarkVibrant"
-              ></ColorSwatch>
-            ) : (
-              ""
-            )}
-
-            {DarkMuted ? (
-              <ColorSwatch swatch={DarkMuted} label="DarkMuted"></ColorSwatch>
-            ) : (
-              ""
-            )}
-
-            {LightVibrant ? (
-              <ColorSwatch
-                swatch={LightVibrant}
-                label="LightVibrant"
-              ></ColorSwatch>
-            ) : (
-              ""
-            )}
-
-            {LightMuted ? (
-              <ColorSwatch swatch={LightMuted} label="LightMuted"></ColorSwatch>
-            ) : (
-              ""
-            )}
-          </ColorSwatchBlock>
-
-          <JSONViewer>
-            <code>{paletteString}</code>
-          </JSONViewer>
-        </VibrantBlock>
+        {paletteImages.map((paletteImage: PaletteImage) => {
+          return createVibrantBlock(paletteImage);
+        })}
       </Main>
 
       <Footer>
@@ -174,21 +181,37 @@ const Home: NextPage<HomeProps> = ({ paletteString, imagePath }) => {
 
 export default Home;
 
+const getLocalPathFromPublicPath = (publicPath: string): string => {
+  const localPath: string = path.resolve(process.cwd(), `public${publicPath}`);
+  return localPath;
+};
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const image1PublicFilePath: string =
-    "/images/david-clode-fT2qXggBlks-unsplash.jpg";
+  const images: string[] = [
+    "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
+    "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
+    "/images/david-clode-fT2qXggBlks-unsplash.jpg",
+  ];
 
-  const image1FilePath: string = path.resolve(
-    process.cwd(),
-    `public${image1PublicFilePath}`
-  );
+  const paletteImages: PaletteImage[] = [];
 
-  // Using builder
-  const palette = await Vibrant.from(image1FilePath).getPalette();
+  for (let i: number = 0; i < images.length; i++) {
+    const localPath: string = images[i];
+    const publicPath: string = getLocalPathFromPublicPath(localPath);
+
+    // Using builder
+    const palette = await Vibrant.from(publicPath).getPalette();
+
+    const paletteImage: PaletteImage = {
+      publicPath: localPath,
+      localPath: publicPath,
+      palette: palette,
+    };
+    paletteImages.push(paletteImage);
+  }
 
   const props: HomeProps = {
-    paletteString: JSON.stringify(palette),
-    imagePath: image1PublicFilePath,
+    paletteImagesString: JSON.stringify(paletteImages),
   };
 
   return {
