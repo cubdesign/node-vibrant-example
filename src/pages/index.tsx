@@ -2,15 +2,15 @@ import styled from "@emotion/styled";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Vibrant from "node-vibrant";
-import path from "path";
 import { Palette, Vec3 } from "@vibrant/color";
 import { css } from "@emotion/react";
 import ColorSwatch from "@/components/colorSwatch";
 import { ReactNode } from "react";
+import absoluteUrl from "next-absolute-url";
 
 type PaletteImage = {
-  publicPath: string;
-  localPath: string;
+  imagePath: string;
+  imageURL: string;
   palette: Palette;
 };
 
@@ -97,11 +97,11 @@ const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
     paletteImage.palette;
   return (
     <VibrantBlock
-      key={paletteImage.publicPath}
+      key={paletteImage.imageURL}
       mainColor={`rgb(${DarkMuted?.rgb.toString()})`}
     >
       <ImageWrapper>
-        <Image src={paletteImage.publicPath} alt="image1" />
+        <Image src={paletteImage.imageURL} alt="image1" />
       </ImageWrapper>
 
       <ColorSwatchBlock>
@@ -181,12 +181,14 @@ const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
 
 export default Home;
 
-const getLocalPathFromPublicPath = (publicPath: string): string => {
-  const localPath: string = path.resolve(process.cwd(), `public${publicPath}`);
-  return localPath;
+const getImageURLFromOrigin = (imagePath: string, origin: string): string => {
+  const imageURL: string = `${origin}${imagePath}`;
+  return imageURL;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { origin } = absoluteUrl(context.req);
+
   const images: string[] = [
     "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
     "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
@@ -196,15 +198,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const paletteImages: PaletteImage[] = [];
 
   for (let i: number = 0; i < images.length; i++) {
-    const localPath: string = images[i];
-    const publicPath: string = getLocalPathFromPublicPath(localPath);
+    const imagePath: string = images[i];
+    const imageURL: string = getImageURLFromOrigin(imagePath, origin);
 
     // Using builder
-    const palette = await Vibrant.from(publicPath).getPalette();
+    const palette = await Vibrant.from(imageURL).getPalette();
 
     const paletteImage: PaletteImage = {
-      publicPath: localPath,
-      localPath: publicPath,
+      imagePath: imagePath,
+      imageURL: imageURL,
       palette: palette,
     };
     paletteImages.push(paletteImage);
