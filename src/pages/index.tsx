@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Vibrant from "node-vibrant";
-import { Palette, Vec3 } from "@vibrant/color";
+import { Palette } from "@vibrant/color";
 import { css } from "@emotion/react";
 import ColorSwatch from "@/components/colorSwatch";
 import { ReactNode } from "react";
@@ -108,11 +108,11 @@ const DetailBlock = styled("div")`
 `;
 
 const ColorSwatchBlock = styled("div")`
-  padding: 2rem;
+  padding: 2rem 1rem;
 `;
 
 const JSONViewer = styled("div")`
-  padding: 0 2rem;
+  padding: 0 1rem;
   line-height: 1.3rem;
   color: #ffffff;
   opacity: 0.2;
