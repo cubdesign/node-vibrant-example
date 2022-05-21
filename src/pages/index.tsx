@@ -65,7 +65,6 @@ const Footer = styled("footer")`
 const Image = styled("img")`
   max-width: 100%;
   max-height: 50vh;
-  margin-bottom: 16px;
   ${mq("sm")} {
     max-height: 60vh;
   }
@@ -91,9 +90,14 @@ const VibrantBlock = styled("div")`
 `;
 
 const ImageBlock = styled("div")`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  min-height: 50vh;
   ${mq("sm")} {
+    min-height: auto;
     width: 50%;
-    padding: 1rem;
   }
 `;
 
@@ -108,9 +112,10 @@ const ColorSwatchBlock = styled("div")`
 `;
 
 const JSONViewer = styled("div")`
-  padding: 2rem;
-  line-height: 1.6rem;
-
+  padding: 0 2rem;
+  line-height: 1.3rem;
+  color: #ffffff;
+  opacity: 0.2;
   code {
     word-break: break-all;
   }

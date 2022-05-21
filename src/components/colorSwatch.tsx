@@ -14,6 +14,7 @@ const Component = styled("div")`
   padding: 8px;
   margin-bottom: 8px;
   overflow: hidden;
+  white-space: nowrap;
   ${backgroundDynamicStyle}
 `;
 
