@@ -103,6 +103,7 @@ const ImageBlock = styled("div")`
 
 const DetailBlock = styled("div")`
   ${mq("sm")} {
+    padding-left: 1rem;
     width: 50%;
   }
 `;
