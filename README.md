@@ -36,3 +36,6 @@ https://github.com/timoxley/colornames
 
 与えられた色の一覧から最も近い色を選択する
 https://github.com/dtao/nearest-color
+
+Twemoji Parser
+https://github.com/twitter/twemoji-parser
