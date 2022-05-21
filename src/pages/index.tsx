@@ -74,7 +74,11 @@ const ImageWrapper = styled("div")`
   text-align: center;
 `;
 
-const backgroundDynamicStyle = ({ mainColor }: { mainColor: any }) => {
+const VibrantBlockBackgroundDynamicStyle = ({
+  mainColor,
+}: {
+  mainColor: any;
+}) => {
   return css`
     background-color: ${mainColor};
   `;
@@ -84,10 +88,32 @@ const VibrantBlock = styled("div")`
   padding: 16px;
   margin-bottom: 16px;
   width: 100%;
-  ${backgroundDynamicStyle} ${mq("sm")} {
+  ${VibrantBlockBackgroundDynamicStyle}
+  ${mq("sm")} {
     display: flex;
   }
 `;
+
+const ImageBlockBackgroundDynamicStyle = ({
+  palette,
+}: {
+  palette: Palette;
+}) => {
+  const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
+    palette;
+
+  return css`
+    background-image: linear-gradient(
+      45deg,
+      rgb(${Vibrant?.rgb.toString()}) 0% 30%,
+      rgb(${Muted?.rgb.toString()}) 0% 40%,
+      rgb(${DarkVibrant?.rgb.toString()}) 0% 50%,
+      rgb(${DarkMuted?.rgb.toString()}) 0% 60%,
+      rgb(${LightVibrant?.rgb.toString()}) 0% 70%,
+      rgb(${LightMuted?.rgb.toString()}) 0% 80%
+    );
+  `;
+};
 
 const ImageBlock = styled("div")`
   display: flex;
@@ -95,6 +121,7 @@ const ImageBlock = styled("div")`
   justify-content: center;
   padding: 1rem;
   min-height: 50vh;
+  ${ImageBlockBackgroundDynamicStyle}
   ${mq("sm")} {
     min-height: auto;
     width: 50%;
@@ -130,21 +157,7 @@ const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
       key={paletteImage.imageURL}
       mainColor={`rgb(${DarkMuted?.rgb.toString()})`}
     >
-      <ImageBlock
-        style={{
-          backgroundImage: `
-          linear-gradient(
-               45deg,
-               rgb(${Vibrant?.rgb.toString()}) 0% 30%, 
-               rgb(${Muted?.rgb.toString()}) 0% 40%,
-               rgb(${DarkVibrant?.rgb.toString()}) 0% 50%, 
-               rgb(${DarkMuted?.rgb.toString()}) 0% 60%, 
-               rgb(${LightVibrant?.rgb.toString()}) 0% 70%, 
-               rgb(${LightMuted?.rgb.toString()}) 0% 80%
-           )
-            `,
-        }}
-      >
+      <ImageBlock palette={paletteImage.palette}>
         <ImageWrapper>
           <Image src={paletteImage.imageURL} alt="image1" />
         </ImageWrapper>
@@ -201,6 +214,7 @@ const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
 
 const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
   const paletteImages: PaletteImage[] = JSON.parse(paletteImagesString);
+
   const emoji = "💨😅🙅🏻‍♂️";
   const emojiEntities: EmojiEntity[] = parse(emoji, {
     buildUrl: (codepoints: string, assetType: string): string => {
@@ -212,6 +226,7 @@ const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
   });
 
   let emojiDisplay: JSX.Element[] = [];
+
   for (let i: number = 0; i < emojiEntities.length; i++) {
     const emojiEntity: EmojiEntity = emojiEntities[i];
     emojiDisplay.push(
