@@ -8,6 +8,7 @@ import ColorSwatch from "@/components/colorSwatch";
 import { ReactNode } from "react";
 import absoluteUrl from "next-absolute-url";
 import { mq } from "@/utils/mq";
+import { EmojiEntity, parse, toCodePoints } from "twemoji-parser";
 
 type PaletteImage = {
   imagePath: string;
@@ -123,7 +124,21 @@ const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
       key={paletteImage.imageURL}
       mainColor={`rgb(${DarkMuted?.rgb.toString()})`}
     >
-      <ImageBlock>
+      <ImageBlock
+        style={{
+          backgroundImage: `
+          linear-gradient(
+               45deg,
+               rgb(${Vibrant?.rgb.toString()}) 0% 30%, 
+               rgb(${Muted?.rgb.toString()}) 0% 40%,
+               rgb(${DarkVibrant?.rgb.toString()}) 0% 50%, 
+               rgb(${DarkMuted?.rgb.toString()}) 0% 60%, 
+               rgb(${LightVibrant?.rgb.toString()}) 0% 70%, 
+               rgb(${LightMuted?.rgb.toString()}) 0% 80%
+           )
+            `,
+        }}
+      >
         <ImageWrapper>
           <Image src={paletteImage.imageURL} alt="image1" />
         </ImageWrapper>
@@ -180,6 +195,28 @@ const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
 
 const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
   const paletteImages: PaletteImage[] = JSON.parse(paletteImagesString);
+  const emoji = "💨😅🙅🏻‍♂️";
+  const emojiEntities: EmojiEntity[] = parse(emoji, {
+    buildUrl: (codepoints: string, assetType: string): string => {
+      return assetType === "png"
+        ? `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/${codepoints}.png`
+        : `https://twemoji.maxcdn.com/v/latest/svg/${codepoints}.svg`;
+    },
+    assetType: "png",
+  });
+
+  let emojiDisplay: JSX.Element[] = [];
+  for (let i: number = 0; i < emojiEntities.length; i++) {
+    const emojiEntity: EmojiEntity = emojiEntities[i];
+    emojiDisplay.push(
+      <div key={emojiDisplay.length}>
+        {`${emojiEntity.text} : `}
+        <img src={emojiEntity.url} alt={emojiEntity.text} />
+        {` : ${emojiEntity.url.replace(/.*\/(.*)\.(png|svg)/, "$1")}`}
+        {/* {` : ${emojiEntity.url}`} */}
+      </div>
+    );
+  }
 
   return (
     <Container>
@@ -191,8 +228,16 @@ const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
 
       <Main>
         <Title>Welcome to node-vibrant example</Title>
-
         <p>サンプルです。</p>
+
+        <div
+          style={{
+            padding: "1rem",
+            fontSize: "2rem",
+          }}
+        >
+          {emojiDisplay}
+        </div>
 
         {paletteImages.map((paletteImage: PaletteImage) => {
           return createVibrantBlock(paletteImage);
@@ -223,6 +268,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { origin } = absoluteUrl(context.req);
 
   const images: string[] = [
+    `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png`,
+    `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png`,
+    `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png`,
     "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
     "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
     "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
@@ -234,7 +282,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   for (let i: number = 0; i < images.length; i++) {
     const imagePath: string = images[i];
-    const imageURL: string = getImageURLFromOrigin(imagePath, origin);
+    const imageURL: string = /^(https:|http:)/.test(imagePath)
+      ? imagePath
+      : getImageURLFromOrigin(imagePath, origin);
 
     // Using builder
     const palette = await Vibrant.from(imageURL).getPalette();

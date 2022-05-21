@@ -16,7 +16,8 @@
     "next-absolute-url": "^1.2.2",
     "node-vibrant": "^3.2.1-alpha.1",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "twemoji-parser": "^14.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",
@@ -24,6 +25,7 @@
     "@types/node": "17.0.35",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.4",
+    "@types/twemoji-parser": "^13.1.1",
     "eslint": "8.15.0",
     "eslint-config-next": "12.1.6",
     "jest": "^28.1.0",
