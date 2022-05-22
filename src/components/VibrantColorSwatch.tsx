@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Swatch, Vec3 } from "@vibrant/color";
+import { Swatch, Vec3 } from "node-vibrant/lib/color";
 
 export type VibrantColorSwatchProps = {
   swatch: Swatch;

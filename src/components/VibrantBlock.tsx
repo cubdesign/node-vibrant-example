@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import VibrantColorSwatch from "@/components/VibrantColorSwatch";
 import { mq } from "@/utils/mq";
-import { Palette } from "@vibrant/color";
 import { css } from "@emotion/react";
-import { VibrantResult } from "@/lib/ColorAnalyzer";
+import { getRatioSwatch, VibrantResult } from "@/lib/ColorAnalyzer";
+import { Palette } from "node-vibrant/lib/color";
 
 type VibrantBlockhProps = {
   vibrantResult: VibrantResult;
@@ -100,6 +100,7 @@ const JSONViewer = styled("div")`
 const VibrantBlock: React.FC<VibrantBlockhProps> = ({ vibrantResult }) => {
   const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
     vibrantResult.palette;
+  getRatioSwatch();
   return (
     <Container
       key={vibrantResult.imageURL}

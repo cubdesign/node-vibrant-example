@@ -1,5 +1,5 @@
 import Vibrant from "node-vibrant";
-import { Palette } from "@vibrant/color";
+import { Palette, Swatch } from "node-vibrant/lib/color";
 import { EmojiEntity, parse } from "twemoji-parser";
 
 interface ExtendsEmojiEntity extends EmojiEntity {
@@ -54,6 +54,40 @@ const getExtendsEmojiEntities = (emoji: string): ExtendsEmojiEntity[] => {
   return extendsEmojiEntities;
 };
 
+type SwatchLabel =
+  | "Vibrant"
+  | "Muted"
+  | "DarkVibrant"
+  | "DarkMuted"
+  | "LightVibrant"
+  | "LightMuted";
+
+type RatioSwatch = {
+  label: SwatchLabel;
+  swatch: Swatch;
+  ratio: number;
+};
+
+const getRatioSwatch = (): RatioSwatch[] => {
+  const ratioSwatchList: RatioSwatch[] = [];
+  // if (palette.Vibrant) {
+  //   ratioSwatchList.push({
+  //     label: "Vibrant",
+  //     swatch: palette.Vibrant,
+  //     ratio: 0,
+  //   });
+  // }
+  // | "Muted"
+  // | "DarkVibrant"
+  // | "DarkMuted"
+  // | "LightVibrant"
+  // | "LightMuted";
+  return ratioSwatchList;
+};
+// const getTopRatioSwatch = (palette: Palette): RatioSwatch => {
+//   return getRatioSwatch(palette)[0];
+// };
+
 const getVibrantList = async (
   vibrantSourceList: VibrantSource[],
   origin: string
@@ -89,6 +123,6 @@ const getVibrantList = async (
   return vibrantResultList;
 };
 
-export { getVibrantList };
-const ColorAnalyzer = { getVibrantList };
+export { getRatioSwatch, getVibrantList };
+const ColorAnalyzer = { getRatioSwatch, getVibrantList };
 export default ColorAnalyzer;
