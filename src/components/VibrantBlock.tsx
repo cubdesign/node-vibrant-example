@@ -64,7 +64,7 @@ const ViewerBlock = styled("div")`
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  min-height: 50vh;
+  min-height: 40vh;
   ${viewerBlockBackgroundDynamicStyle}
   ${mq("sm")} {
     min-height: auto;

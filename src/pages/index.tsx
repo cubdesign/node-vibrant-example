@@ -10,6 +10,7 @@ import {
   VibrantSource,
 } from "@/lib/ColorAnalyzer";
 import VibrantBlock from "@/components/VibrantBlock";
+import { mq } from "@/utils/mq";
 
 type HomeProps = {
   vibrantResultListString: string;
@@ -32,8 +33,12 @@ const Main = styled("main")`
 const Title = styled("h1")`
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 2rem;
   text-align: center;
+
+  ${mq("sm")} {
+    font-size: 4rem;
+  }
 `;
 
 const Footer = styled("footer")`
