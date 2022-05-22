@@ -10,7 +10,7 @@ import {
 } from "@/lib/ColorAnalyzer";
 import { Palette } from "node-vibrant/lib/color";
 
-type VibrantBlockhProps = {
+type VibrantBlockProps = {
   vibrantResult: VibrantResult;
 };
 
@@ -102,7 +102,7 @@ const JSONViewer = styled("div")`
   }
 `;
 
-const VibrantBlock: React.FC<VibrantBlockhProps> = ({ vibrantResult }) => {
+const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
   const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
     vibrantResult.palette;
   const ratioSwatchList = getRatioSwatch(vibrantResult.palette);
