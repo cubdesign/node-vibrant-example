@@ -62,16 +62,21 @@ const getVibrantList = async (
 
   for (let i: number = 0; i < vibrantSourceList.length; i++) {
     const source = vibrantSourceList[i];
+
     const filePath: string =
       source.type === "image"
         ? source.file!
         : getExtendsEmojiEntities(source.emoji!)[0].url;
+
     const imageURL: string = /^(https:|http:)/.test(filePath)
       ? filePath
       : getImageURLFromOrigin(filePath, origin);
 
+    // 絵文字は、画像が64x64と小さいのでクオリティを上げる
+    const quality: number = source.type === "image" ? 5 : 1;
+
     // Using builder
-    const palette = await Vibrant.from(imageURL).getPalette();
+    const palette = await Vibrant.from(imageURL).quality(quality).getPalette();
 
     const vibrantResult: VibrantResult = {
       imageURL: imageURL,
