@@ -20,6 +20,21 @@ export type VibrantResult = {
   source: VibrantSource;
 };
 
+export type SwatchLabel =
+  | "Vibrant"
+  | "Muted"
+  | "DarkVibrant"
+  | "DarkMuted"
+  | "LightVibrant"
+  | "LightMuted";
+
+export type RatioSwatch = {
+  label: SwatchLabel;
+  // TODO SwatchはClassだった。なので、↓はインスタンスが入る
+  swatch: Swatch;
+  ratio: number;
+};
+
 const getImageURLFromOrigin = (imagePath: string, origin: string): string => {
   const imageURL: string = `${origin}${imagePath}`;
   return imageURL;
@@ -54,39 +69,91 @@ const getExtendsEmojiEntities = (emoji: string): ExtendsEmojiEntity[] => {
   return extendsEmojiEntities;
 };
 
-type SwatchLabel =
-  | "Vibrant"
-  | "Muted"
-  | "DarkVibrant"
-  | "DarkMuted"
-  | "LightVibrant"
-  | "LightMuted";
-
-type RatioSwatch = {
-  label: SwatchLabel;
-  swatch: Swatch;
-  ratio: number;
-};
-
-const getRatioSwatch = (): RatioSwatch[] => {
+const getRatioSwatch = (palette: Palette): RatioSwatch[] => {
   const ratioSwatchList: RatioSwatch[] = [];
-  // if (palette.Vibrant) {
-  //   ratioSwatchList.push({
-  //     label: "Vibrant",
-  //     swatch: palette.Vibrant,
-  //     ratio: 0,
-  //   });
-  // }
-  // | "Muted"
-  // | "DarkVibrant"
-  // | "DarkMuted"
-  // | "LightVibrant"
-  // | "LightMuted";
-  return ratioSwatchList;
+  if (palette.Vibrant) {
+    ratioSwatchList.push({
+      label: "Vibrant",
+      swatch: palette.Vibrant,
+      ratio: 0,
+    });
+  }
+
+  if (palette.Muted) {
+    ratioSwatchList.push({
+      label: "Muted",
+      swatch: palette.Muted,
+      ratio: 0,
+    });
+  }
+
+  if (palette.DarkVibrant) {
+    ratioSwatchList.push({
+      label: "DarkVibrant",
+      swatch: palette.DarkVibrant,
+      ratio: 0,
+    });
+  }
+
+  if (palette.DarkMuted) {
+    ratioSwatchList.push({
+      label: "DarkMuted",
+      swatch: palette.DarkMuted,
+      ratio: 0,
+    });
+  }
+
+  if (palette.LightVibrant) {
+    ratioSwatchList.push({
+      label: "LightVibrant",
+      swatch: palette.LightVibrant,
+      ratio: 0,
+    });
+  }
+
+  if (palette.LightMuted) {
+    ratioSwatchList.push({
+      label: "LightMuted",
+      swatch: palette.LightMuted,
+      ratio: 0,
+    });
+  }
+
+  const totalPopulation = ratioSwatchList.reduce(
+    (acc: number, val: RatioSwatch): number => {
+      return acc + val.swatch.population;
+    },
+    0
+  );
+
+  const calculatedRatioSwatchList = ratioSwatchList.map(
+    (ratioSwatch: RatioSwatch): RatioSwatch => {
+      ratioSwatch.ratio =
+        (ratioSwatch.swatch.population / totalPopulation) * 100;
+      return ratioSwatch;
+    }
+  );
+
+  return calculatedRatioSwatchList;
 };
-// const getTopRatioSwatch = (palette: Palette): RatioSwatch => {
-//   return getRatioSwatch(palette)[0];
-// };
+
+const getTopRatioSwatch = (ratioSwatchList: RatioSwatch[]): RatioSwatch => {
+  // 0,4,3,1,0,2,5
+  const withoutZeroRatioSwatchList: RatioSwatch[] = ratioSwatchList.filter(
+    (ratioSwatch: RatioSwatch) => {
+      return ratioSwatch.ratio > 0;
+    }
+  );
+
+  // 5,4,3,2,1
+  const sortedRatioSwatchList: RatioSwatch[] = withoutZeroRatioSwatchList.sort(
+    (a: RatioSwatch, b: RatioSwatch) => {
+      return b.ratio - a.ratio;
+    }
+  );
+
+  return sortedRatioSwatchList[0];
+};
 
 const getVibrantList = async (
   vibrantSourceList: VibrantSource[],
@@ -123,6 +190,6 @@ const getVibrantList = async (
   return vibrantResultList;
 };
 
-export { getRatioSwatch, getVibrantList };
-const ColorAnalyzer = { getRatioSwatch, getVibrantList };
+export { getRatioSwatch, getTopRatioSwatch, getVibrantList };
+const ColorAnalyzer = { getRatioSwatch, getTopRatioSwatch, getVibrantList };
 export default ColorAnalyzer;

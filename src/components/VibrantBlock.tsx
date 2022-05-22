@@ -2,7 +2,12 @@ import styled from "@emotion/styled";
 import VibrantColorSwatch from "@/components/VibrantColorSwatch";
 import { mq } from "@/utils/mq";
 import { css } from "@emotion/react";
-import { getRatioSwatch, VibrantResult } from "@/lib/ColorAnalyzer";
+import {
+  getRatioSwatch,
+  getTopRatioSwatch,
+  RatioSwatch,
+  VibrantResult,
+} from "@/lib/ColorAnalyzer";
 import { Palette } from "node-vibrant/lib/color";
 
 type VibrantBlockhProps = {
@@ -90,8 +95,8 @@ const JSONViewer = styled("div")`
   padding: 0 1rem;
   font-size: 12px;
   line-height: 1.2rem;
-  color: #ffffff;
-  opacity: 0.2;
+  color: #000000;
+  opacity: 0.5;
   code {
     word-break: break-all;
   }
@@ -100,11 +105,14 @@ const JSONViewer = styled("div")`
 const VibrantBlock: React.FC<VibrantBlockhProps> = ({ vibrantResult }) => {
   const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
     vibrantResult.palette;
-  getRatioSwatch();
+  const ratioSwatchList = getRatioSwatch(vibrantResult.palette);
+  // console.log("ratioSwatchList", ratioSwatchList);
+  // console.log("getTopRatioSwatch", getTopRatioSwatch(ratioSwatchList));
+  const topRatioSwatch: RatioSwatch = getTopRatioSwatch(ratioSwatchList);
   return (
     <Container
       key={vibrantResult.imageURL}
-      mainColor={`rgb(${DarkMuted?.rgb.toString()})`}
+      mainColor={`rgb(${topRatioSwatch.swatch.rgb.toString()})`}
     >
       <ViewerBlock palette={vibrantResult.palette}>
         <ViewerWrapper>
