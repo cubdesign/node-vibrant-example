@@ -1,4 +1,4 @@
-import { RatioSwatch, rgbInteger } from "@/lib/ColorAnalyzer";
+import { ratioInteger, RatioSwatch, rgbInteger } from "@/lib/ColorAnalyzer";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Vec3 } from "node-vibrant/lib/color";
@@ -93,7 +93,7 @@ const VibrantColorSwatch: React.FC<VibrantColorSwatchProps> = ({
         <Label>{label}</Label>
         <Rgb>{shortRgb.join(",")}</Rgb>
         <Population>{population}</Population>
-        <Ratio>{Math.round(ratio)}</Ratio>
+        <Ratio>{ratioInteger(ratio)}</Ratio>
       </ComponentInner>
     </Component>
   );

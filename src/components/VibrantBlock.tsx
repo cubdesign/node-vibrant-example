@@ -3,6 +3,7 @@ import VibrantColorSwatch from "@/components/VibrantColorSwatch";
 import { mq } from "@/utils/mq";
 import { css } from "@emotion/react";
 import {
+  getCSSGradientRGBList,
   getRatioSwatch,
   getTopRatioSwatch,
   RatioSwatch,
@@ -48,23 +49,12 @@ const Container = styled("div")`
 `;
 
 const viewerBlockBackgroundDynamicStyle = ({
-  palette,
+  cssGradientRGB,
 }: {
-  palette: Palette;
+  cssGradientRGB: string[];
 }) => {
-  const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
-    palette;
-
   return css`
-    background-image: linear-gradient(
-      45deg,
-      rgb(${Vibrant?.rgb.toString()}) 0% 30%,
-      rgb(${Muted?.rgb.toString()}) 0% 40%,
-      rgb(${DarkVibrant?.rgb.toString()}) 0% 50%,
-      rgb(${DarkMuted?.rgb.toString()}) 0% 60%,
-      rgb(${LightVibrant?.rgb.toString()}) 0% 70%,
-      rgb(${LightMuted?.rgb.toString()}) 0% 80%
-    );
+    background-image: linear-gradient(45deg, ${cssGradientRGB.join(",")});
   `;
 };
 
@@ -110,12 +100,14 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
   // console.log("ratioSwatchList", ratioSwatchList);
   // console.log("getTopRatioSwatch", getTopRatioSwatch(ratioSwatchList));
   const topRatioSwatch: RatioSwatch = getTopRatioSwatch(ratioSwatchList);
+  const cssGradientRGBList: string[] = getCSSGradientRGBList(ratioSwatchList);
+  // console.log("cssGradientRGBList", cssGradientRGBList.join(","));
   return (
     <Container
       key={vibrantResult.imageURL}
       mainColor={`rgb(${rgbInteger(topRatioSwatch.swatch.rgb).toString()})`}
     >
-      <ViewerBlock palette={vibrantResult.palette}>
+      <ViewerBlock cssGradientRGB={cssGradientRGBList}>
         <ViewerWrapper>
           {vibrantResult.source.type === "image" ? (
             <Image src={vibrantResult.imageURL} alt="image1" />

@@ -36,7 +36,7 @@ export type RatioSwatch = {
 };
 
 /**
- * rgbの整数にして返す
+ * rgbを整数にして返す
  *
  * TODO 表示する場合、ここを通さないと色が表記と変わる。整数にしているので、色が変わるかもしれない
  */
@@ -44,6 +44,13 @@ const rgbInteger = (rgb: Vec3): Vec3 => {
   return rgb.map((n: number): number => {
     return Math.floor(n);
   }) as Vec3;
+};
+
+/**
+ *  ratioを整数にして返す
+ */
+const ratioInteger = (ratio: number): number => {
+  return Math.floor(ratio);
 };
 
 const getImageURLFromOrigin = (imagePath: string, origin: string): string => {
@@ -166,6 +173,35 @@ const getTopRatioSwatch = (ratioSwatchList: RatioSwatch[]): RatioSwatch => {
   return sortedRatioSwatchList[0];
 };
 
+const getCSSGradientRGBList = (ratioSwatchList: RatioSwatch[]): string[] => {
+  // 0,4,3,1,0,2,5
+  const withoutZeroRatioSwatchList: RatioSwatch[] = ratioSwatchList.filter(
+    (ratioSwatch: RatioSwatch) => {
+      return ratioSwatch.ratio > 0;
+    }
+  );
+
+  const cssRGBList: string[] = [];
+  // 開始は常に0
+  let currentStart: number = 0;
+  let currentEnd: number = 0;
+  for (let i: number = 0; i < withoutZeroRatioSwatchList.length; i++) {
+    const ratioSwatch: RatioSwatch = withoutZeroRatioSwatchList[i];
+    currentEnd += ratioInteger(ratioSwatch.ratio);
+    if (i === withoutZeroRatioSwatchList.length - 1) {
+      // 100%を超えないように、最後は100%
+      currentEnd = 100;
+    }
+    cssRGBList.push(
+      `rgb(${rgbInteger(
+        ratioSwatch.swatch.rgb
+      ).toString()}) ${currentStart}% ${currentEnd}%`
+    );
+  }
+
+  return cssRGBList;
+};
+
 const getVibrantList = async (
   vibrantSourceList: VibrantSource[],
   origin: string
@@ -201,11 +237,20 @@ const getVibrantList = async (
   return vibrantResultList;
 };
 
-export { rgbInteger, getRatioSwatch, getTopRatioSwatch, getVibrantList };
-const ColorAnalyzer = {
+export {
   rgbInteger,
+  ratioInteger,
   getRatioSwatch,
   getTopRatioSwatch,
+  getCSSGradientRGBList,
+  getVibrantList,
+};
+const ColorAnalyzer = {
+  rgbInteger,
+  ratioInteger,
+  getRatioSwatch,
+  getTopRatioSwatch,
+  getCSSGradientRGBList,
   getVibrantList,
 };
 export default ColorAnalyzer;
