@@ -1,28 +1,17 @@
 import styled from "@emotion/styled";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import Vibrant from "node-vibrant";
 import { Palette } from "@vibrant/color";
 import { css } from "@emotion/react";
 import ColorSwatch from "@/components/colorSwatch";
 import { ReactNode } from "react";
 import absoluteUrl from "next-absolute-url";
 import { mq } from "@/utils/mq";
-import { EmojiEntity, parse, toCodePoints } from "twemoji-parser";
-
-type VibrantSourceType = "image" | "emoji";
-
-type VibrantSource = {
-  file: string;
-  type: VibrantSourceType;
-  emoji?: string;
-};
-
-type VibrantResult = {
-  imageURL: string;
-  palette: Palette;
-  source: VibrantSource;
-};
+import {
+  getVibrantList,
+  VibrantResult,
+  VibrantSource,
+} from "@/lib/ColorAnalyzer";
 
 type HomeProps = {
   vibrantResultListString: string;
@@ -78,7 +67,7 @@ const Image = styled("img")`
   }
 `;
 const Emoji = styled("div")`
-  font-size: 15rem;
+  font-size: 12rem;
 `;
 
 // TODO これは、不要かも
@@ -234,31 +223,6 @@ const Home: NextPage<HomeProps> = ({ vibrantResultListString }) => {
     vibrantResultListString
   );
 
-  const emoji = "💨😅🙅🏻‍♂️";
-
-  const emojiEntities: EmojiEntity[] = parse(emoji, {
-    buildUrl: (codepoints: string, assetType: string): string => {
-      return assetType === "png"
-        ? `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/${codepoints}.png`
-        : `https://twemoji.maxcdn.com/v/latest/svg/${codepoints}.svg`;
-    },
-    assetType: "png",
-  });
-
-  let emojiDisplay: JSX.Element[] = [];
-
-  for (let i: number = 0; i < emojiEntities.length; i++) {
-    const emojiEntity: EmojiEntity = emojiEntities[i];
-    emojiDisplay.push(
-      <div key={emojiDisplay.length}>
-        {`${emojiEntity.text} : `}
-        <img src={emojiEntity.url} alt={emojiEntity.text} />
-        {` : ${emojiEntity.url.replace(/.*\/(.*)\.(png|svg)/, "$1")}`}
-        {/* {` : ${emojiEntity.url}`} */}
-      </div>
-    );
-  }
-
   return (
     <Container>
       <Head>
@@ -270,15 +234,6 @@ const Home: NextPage<HomeProps> = ({ vibrantResultListString }) => {
       <Main>
         <Title>Welcome to node-vibrant example</Title>
         <p>サンプルです。</p>
-
-        <div
-          style={{
-            padding: "1rem",
-            fontSize: "2rem",
-          }}
-        >
-          {emojiDisplay}
-        </div>
 
         {vibrantResultList.map((vibrantResult: VibrantResult) => {
           return createVibrantBlock(vibrantResult);
@@ -300,29 +255,27 @@ const Home: NextPage<HomeProps> = ({ vibrantResultListString }) => {
 
 export default Home;
 
-const getImageURLFromOrigin = (imagePath: string, origin: string): string => {
-  const imageURL: string = `${origin}${imagePath}`;
-  return imageURL;
-};
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { origin } = absoluteUrl(context.req);
-
   const vibrantSourceList: VibrantSource[] = [
     {
-      file: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png",
+      emoji: "👾",
       type: "emoji",
+    },
+    {
+      emoji: "🎁",
+      type: "emoji",
+    },
+    {
       emoji: "💨",
+      type: "emoji",
     },
     {
-      file: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png",
-      type: "emoji",
       emoji: "😅",
+      type: "emoji",
     },
     {
-      file: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png",
-      type: "emoji",
       emoji: "🙅🏻‍♂️",
+      type: "emoji",
     },
     {
       file: "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
@@ -347,26 +300,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   ];
 
-  const vibrantResultList: VibrantResult[] = [];
+  const { origin } = absoluteUrl(context.req);
 
-  for (let i: number = 0; i < vibrantSourceList.length; i++) {
-    const source = vibrantSourceList[i];
-    const filePath: string = source.file;
-    const imageURL: string = /^(https:|http:)/.test(filePath)
-      ? filePath
-      : getImageURLFromOrigin(filePath, origin);
-
-    // Using builder
-    const palette = await Vibrant.from(imageURL).getPalette();
-
-    const vibrantResult: VibrantResult = {
-      imageURL: imageURL,
-      palette: palette,
-      source: source,
-    };
-
-    vibrantResultList.push(vibrantResult);
-  }
+  const vibrantResultList: VibrantResult[] = await getVibrantList(
+    vibrantSourceList,
+    origin
+  );
 
   const props: HomeProps = {
     vibrantResultListString: JSON.stringify(vibrantResultList),
