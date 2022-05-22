@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Swatch, Vec3 } from "@vibrant/color";
 
-type ColorSwatchProps = {
+export type VibrantColorSwatchProps = {
   swatch: Swatch;
   label: string;
 };
@@ -52,7 +52,10 @@ const rgbFloor = (rgb: Vec3): Vec3 => {
   }) as Vec3;
 };
 
-const ColorSwatch: React.FC<ColorSwatchProps> = ({ swatch, label }) => {
+const VibrantColorSwatch: React.FC<VibrantColorSwatchProps> = ({
+  swatch,
+  label,
+}) => {
   const { rgb, population } = swatch;
 
   // 少数点が多すぎるとテキストが切れるので、数値を切り捨て
@@ -69,4 +72,4 @@ const ColorSwatch: React.FC<ColorSwatchProps> = ({ swatch, label }) => {
   );
 };
 
-export default ColorSwatch;
+export default VibrantColorSwatch;
