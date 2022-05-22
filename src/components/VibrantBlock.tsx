@@ -40,8 +40,9 @@ const containerBackgroundDynamicStyle = ({ mainColor }: { mainColor: any }) => {
 
 const Container = styled("div")`
   padding: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
   width: 100%;
+  border-radius: 0;
   ${containerBackgroundDynamicStyle}
   ${mq("sm")} {
     display: flex;
@@ -75,11 +76,18 @@ const DetailBlock = styled("div")`
   ${mq("sm")} {
     padding-left: 1rem;
     width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
 const ColorSwatchBlock = styled("div")`
   padding: 2rem 1rem;
+  ${mq("sm")} {
+    width: 100%;
+  }
 `;
 
 const JSONViewer = styled("div")`
@@ -90,6 +98,9 @@ const JSONViewer = styled("div")`
   opacity: 0.5;
   code {
     word-break: break-all;
+  }
+  ${mq("sm")} {
+    width: 100%;
   }
 `;
 
@@ -128,7 +139,11 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
           })}
         </ColorSwatchBlock>
 
-        <JSONViewer>
+        <JSONViewer
+          style={{
+            display: "none",
+          }}
+        >
           <code>{JSON.stringify(vibrantResult)}</code>
         </JSONViewer>
       </DetailBlock>
