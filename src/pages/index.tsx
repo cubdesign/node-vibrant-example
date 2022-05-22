@@ -77,7 +77,15 @@ const Home: NextPage<HomeProps> = ({ vibrantResultListString }) => {
 
       <Main>
         <Title>Welcome to node-vibrant example</Title>
-        <p>サンプルです。</p>
+        <p>
+          <a
+            href="https://github.com/cubdesign/node-vibrant-example"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            https://github.com/cubdesign/node-vibrant-example
+          </a>
+        </p>
 
         {vibrantResultList.map(
           (vibrantResult: VibrantResult, index: number) => {
