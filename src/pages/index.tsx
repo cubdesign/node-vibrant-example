@@ -10,14 +10,22 @@ import absoluteUrl from "next-absolute-url";
 import { mq } from "@/utils/mq";
 import { EmojiEntity, parse, toCodePoints } from "twemoji-parser";
 
-type PaletteImage = {
-  imagePath: string;
+type VibrantSourceType = "image" | "emoji";
+
+type VibrantSource = {
+  file: string;
+  type: VibrantSourceType;
+  emoji?: string;
+};
+
+type VibrantResult = {
   imageURL: string;
   palette: Palette;
+  source: VibrantSource;
 };
 
 type HomeProps = {
-  paletteImagesString: string;
+  vibrantResultListString: string;
 };
 
 const Container = styled("div")`
@@ -69,12 +77,16 @@ const Image = styled("img")`
     max-height: 60vh;
   }
 `;
+const Emoji = styled("div")`
+  font-size: 15rem;
+`;
 
-const ImageWrapper = styled("div")`
+// TODO これは、不要かも
+const ViewerWrapper = styled("div")`
   text-align: center;
 `;
 
-const VibrantBlockBackgroundDynamicStyle = ({
+const vibrantBlockBackgroundDynamicStyle = ({
   mainColor,
 }: {
   mainColor: any;
@@ -88,13 +100,13 @@ const VibrantBlock = styled("div")`
   padding: 16px;
   margin-bottom: 16px;
   width: 100%;
-  ${VibrantBlockBackgroundDynamicStyle}
+  ${vibrantBlockBackgroundDynamicStyle}
   ${mq("sm")} {
     display: flex;
   }
 `;
 
-const ImageBlockBackgroundDynamicStyle = ({
+const viewerBlockBackgroundDynamicStyle = ({
   palette,
 }: {
   palette: Palette;
@@ -115,13 +127,13 @@ const ImageBlockBackgroundDynamicStyle = ({
   `;
 };
 
-const ImageBlock = styled("div")`
+const ViewerBlock = styled("div")`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   min-height: 50vh;
-  ${ImageBlockBackgroundDynamicStyle}
+  ${viewerBlockBackgroundDynamicStyle}
   ${mq("sm")} {
     min-height: auto;
     width: 50%;
@@ -141,7 +153,8 @@ const ColorSwatchBlock = styled("div")`
 
 const JSONViewer = styled("div")`
   padding: 0 1rem;
-  line-height: 1.3rem;
+  font-size: 12px;
+  line-height: 1.2rem;
   color: #ffffff;
   opacity: 0.2;
   code {
@@ -149,19 +162,23 @@ const JSONViewer = styled("div")`
   }
 `;
 
-const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
+const createVibrantBlock = (vibrantResult: VibrantResult): ReactNode => {
   const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
-    paletteImage.palette;
+    vibrantResult.palette;
   return (
     <VibrantBlock
-      key={paletteImage.imageURL}
+      key={vibrantResult.imageURL}
       mainColor={`rgb(${DarkMuted?.rgb.toString()})`}
     >
-      <ImageBlock palette={paletteImage.palette}>
-        <ImageWrapper>
-          <Image src={paletteImage.imageURL} alt="image1" />
-        </ImageWrapper>
-      </ImageBlock>
+      <ViewerBlock palette={vibrantResult.palette}>
+        <ViewerWrapper>
+          {vibrantResult.source.type === "image" ? (
+            <Image src={vibrantResult.imageURL} alt="image1" />
+          ) : (
+            <Emoji>{vibrantResult.source.emoji}</Emoji>
+          )}
+        </ViewerWrapper>
+      </ViewerBlock>
       <DetailBlock>
         <ColorSwatchBlock>
           {Vibrant ? (
@@ -205,17 +222,20 @@ const createVibrantBlock = (paletteImage: PaletteImage): ReactNode => {
         </ColorSwatchBlock>
 
         <JSONViewer>
-          <code>{JSON.stringify(paletteImage.palette)}</code>
+          <code>{JSON.stringify(vibrantResult)}</code>
         </JSONViewer>
       </DetailBlock>
     </VibrantBlock>
   );
 };
 
-const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
-  const paletteImages: PaletteImage[] = JSON.parse(paletteImagesString);
+const Home: NextPage<HomeProps> = ({ vibrantResultListString }) => {
+  const vibrantResultList: VibrantResult[] = JSON.parse(
+    vibrantResultListString
+  );
 
   const emoji = "💨😅🙅🏻‍♂️";
+
   const emojiEntities: EmojiEntity[] = parse(emoji, {
     buildUrl: (codepoints: string, assetType: string): string => {
       return assetType === "png"
@@ -260,8 +280,8 @@ const Home: NextPage<HomeProps> = ({ paletteImagesString }) => {
           {emojiDisplay}
         </div>
 
-        {paletteImages.map((paletteImage: PaletteImage) => {
-          return createVibrantBlock(paletteImage);
+        {vibrantResultList.map((vibrantResult: VibrantResult) => {
+          return createVibrantBlock(vibrantResult);
         })}
       </Main>
 
@@ -288,38 +308,68 @@ const getImageURLFromOrigin = (imagePath: string, origin: string): string => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { origin } = absoluteUrl(context.req);
 
-  const images: string[] = [
-    `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png`,
-    `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png`,
-    `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png`,
-    "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
-    "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
-    "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
-    "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
-    "/images/david-clode-fT2qXggBlks-unsplash.jpg",
+  const vibrantSourceList: VibrantSource[] = [
+    {
+      file: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png",
+      type: "emoji",
+      emoji: "💨",
+    },
+    {
+      file: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png",
+      type: "emoji",
+      emoji: "😅",
+    },
+    {
+      file: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png",
+      type: "emoji",
+      emoji: "🙅🏻‍♂️",
+    },
+    {
+      file: "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
+      type: "image",
+    },
+    {
+      file: "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
+      type: "image",
+    },
+    {
+      file: "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
+      type: "image",
+    },
+
+    {
+      file: "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
+      type: "image",
+    },
+    {
+      file: "/images/david-clode-fT2qXggBlks-unsplash.jpg",
+      type: "image",
+    },
   ];
 
-  const paletteImages: PaletteImage[] = [];
+  const vibrantResultList: VibrantResult[] = [];
 
-  for (let i: number = 0; i < images.length; i++) {
-    const imagePath: string = images[i];
-    const imageURL: string = /^(https:|http:)/.test(imagePath)
-      ? imagePath
-      : getImageURLFromOrigin(imagePath, origin);
+  for (let i: number = 0; i < vibrantSourceList.length; i++) {
+    const source = vibrantSourceList[i];
+    const filePath: string = source.file;
+    const imageURL: string = /^(https:|http:)/.test(filePath)
+      ? filePath
+      : getImageURLFromOrigin(filePath, origin);
 
     // Using builder
     const palette = await Vibrant.from(imageURL).getPalette();
 
-    const paletteImage: PaletteImage = {
-      imagePath: imagePath,
+    const vibrantResult: VibrantResult = {
       imageURL: imageURL,
       palette: palette,
+      source: source,
     };
-    paletteImages.push(paletteImage);
+
+    vibrantResultList.push(vibrantResult);
   }
 
   const props: HomeProps = {
-    paletteImagesString: JSON.stringify(paletteImages),
+    vibrantResultListString: JSON.stringify(vibrantResultList),
   };
 
   return {
