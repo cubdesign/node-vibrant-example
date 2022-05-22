@@ -1,10 +1,10 @@
+import { RatioSwatch, rgbInteger } from "@/lib/ColorAnalyzer";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Swatch, Vec3 } from "node-vibrant/lib/color";
+import { Vec3 } from "node-vibrant/lib/color";
 
 export type VibrantColorSwatchProps = {
-  swatch: Swatch;
-  label: string;
+  ratioSwatch: RatioSwatch;
 };
 
 const backgroundDynamicStyle = ({ rgb }: { rgb: any }) => {
@@ -17,7 +17,7 @@ const Component = styled("div")`
   border: solid 1px #000000;
   padding: 8px;
   margin-bottom: 8px;
-  font-size: 0.86rem;
+  font-size: 12px;
   ${backgroundDynamicStyle}
 `;
 
@@ -29,6 +29,11 @@ const ComponentInner = styled("div")`
 
 const Label = styled("span")`
   display: inline-block;
+  &::after {
+    content: ":";
+    font-size: 10px;
+    opacity: 0.5;
+  }
 `;
 
 const Rgb = styled("span")`
@@ -36,37 +41,59 @@ const Rgb = styled("span")`
   white-space: nowrap;
   text-overflow: ellipsis;
   display: inline-block;
-  width: 100%;
-  padding-left: 8px;
-  padding-right: 16px;
+  flex: 3;
+  padding-left: 2px;
+
+  &::before {
+    content: "rgb(";
+    font-size: 10px;
+    opacity: 0.5;
+  }
+  &::after {
+    content: ")";
+    font-size: 10px;
+    opacity: 0.5;
+  }
 `;
 
 const Population = styled("span")`
-  display: inline-block;
+  display: block;
+  flex: 1;
+  text-align: right;
+  &::after {
+    content: "p";
+    font-size: 10px;
+    opacity: 0.5;
+  }
 `;
 
-const rgbFloor = (rgb: Vec3): Vec3 => {
-  return rgb.map((n: number): number => {
-    // 小数第2位以下を切り捨て
-    return Math.floor(n * 10) / 10;
-  }) as Vec3;
-};
+const Ratio = styled("span")`
+  display: block;
+  flex-basis: 32px;
+  text-align: right;
+  &::after {
+    content: "%";
+    font-size: 10px;
+    opacity: 0.5;
+  }
+`;
 
 const VibrantColorSwatch: React.FC<VibrantColorSwatchProps> = ({
-  swatch,
-  label,
+  ratioSwatch,
 }) => {
-  const { rgb, population } = swatch;
+  const { rgb, population } = ratioSwatch.swatch;
+  const { label, ratio } = ratioSwatch;
 
   // 少数点が多すぎるとテキストが切れるので、数値を切り捨て
-  const shortRgb: Vec3 = rgbFloor(rgb);
+  const shortRgb: Vec3 = rgbInteger(rgb);
 
   return (
-    <Component rgb={rgb}>
+    <Component rgb={shortRgb}>
       <ComponentInner>
-        <Label>{label}: </Label>
-        <Rgb>[ {shortRgb.join(", ")} ]</Rgb>
+        <Label>{label}</Label>
+        <Rgb>{shortRgb.join(",")}</Rgb>
         <Population>{population}</Population>
+        <Ratio>{Math.round(ratio)}</Ratio>
       </ComponentInner>
     </Component>
   );

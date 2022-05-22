@@ -6,6 +6,7 @@ import {
   getRatioSwatch,
   getTopRatioSwatch,
   RatioSwatch,
+  rgbInteger,
   VibrantResult,
 } from "@/lib/ColorAnalyzer";
 import { Palette } from "node-vibrant/lib/color";
@@ -112,7 +113,7 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
   return (
     <Container
       key={vibrantResult.imageURL}
-      mainColor={`rgb(${topRatioSwatch.swatch.rgb.toString()})`}
+      mainColor={`rgb(${rgbInteger(topRatioSwatch.swatch.rgb).toString()})`}
     >
       <ViewerBlock palette={vibrantResult.palette}>
         <ViewerWrapper>
@@ -125,59 +126,14 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
       </ViewerBlock>
       <DetailBlock>
         <ColorSwatchBlock>
-          {Vibrant ? (
-            <VibrantColorSwatch
-              swatch={Vibrant}
-              label="Vibrant"
-            ></VibrantColorSwatch>
-          ) : (
-            ""
-          )}
-
-          {Muted ? (
-            <VibrantColorSwatch
-              swatch={Muted}
-              label="Muted"
-            ></VibrantColorSwatch>
-          ) : (
-            ""
-          )}
-
-          {DarkVibrant ? (
-            <VibrantColorSwatch
-              swatch={DarkVibrant}
-              label="DarkVibrant"
-            ></VibrantColorSwatch>
-          ) : (
-            ""
-          )}
-
-          {DarkMuted ? (
-            <VibrantColorSwatch
-              swatch={DarkMuted}
-              label="DarkMuted"
-            ></VibrantColorSwatch>
-          ) : (
-            ""
-          )}
-
-          {LightVibrant ? (
-            <VibrantColorSwatch
-              swatch={LightVibrant}
-              label="LightVibrant"
-            ></VibrantColorSwatch>
-          ) : (
-            ""
-          )}
-
-          {LightMuted ? (
-            <VibrantColorSwatch
-              swatch={LightMuted}
-              label="LightMuted"
-            ></VibrantColorSwatch>
-          ) : (
-            ""
-          )}
+          {ratioSwatchList.map((ratioSwatch: RatioSwatch) => {
+            return (
+              <VibrantColorSwatch
+                key={ratioSwatch.label}
+                ratioSwatch={ratioSwatch}
+              ></VibrantColorSwatch>
+            );
+          })}
         </ColorSwatchBlock>
 
         <JSONViewer>

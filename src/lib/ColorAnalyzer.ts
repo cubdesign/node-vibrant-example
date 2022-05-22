@@ -1,5 +1,5 @@
 import Vibrant from "node-vibrant";
-import { Palette, Swatch } from "node-vibrant/lib/color";
+import { Palette, Swatch, Vec3 } from "node-vibrant/lib/color";
 import { EmojiEntity, parse } from "twemoji-parser";
 
 interface ExtendsEmojiEntity extends EmojiEntity {
@@ -33,6 +33,17 @@ export type RatioSwatch = {
   // TODO SwatchはClassだった。なので、↓はインスタンスが入る
   swatch: Swatch;
   ratio: number;
+};
+
+/**
+ * rgbの整数にして返す
+ *
+ * TODO 表示する場合、ここを通さないと色が表記と変わる。整数にしているので、色が変わるかもしれない
+ */
+const rgbInteger = (rgb: Vec3): Vec3 => {
+  return rgb.map((n: number): number => {
+    return Math.floor(n);
+  }) as Vec3;
 };
 
 const getImageURLFromOrigin = (imagePath: string, origin: string): string => {
@@ -190,6 +201,11 @@ const getVibrantList = async (
   return vibrantResultList;
 };
 
-export { getRatioSwatch, getTopRatioSwatch, getVibrantList };
-const ColorAnalyzer = { getRatioSwatch, getTopRatioSwatch, getVibrantList };
+export { rgbInteger, getRatioSwatch, getTopRatioSwatch, getVibrantList };
+const ColorAnalyzer = {
+  rgbInteger,
+  getRatioSwatch,
+  getTopRatioSwatch,
+  getVibrantList,
+};
 export default ColorAnalyzer;
