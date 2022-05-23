@@ -4,6 +4,7 @@ import Link from "next/link";
 const StyledHeader = styled("header")`
   a {
     color: #eae8e8;
+    font-size: 0.85rem;
   }
 `;
 
