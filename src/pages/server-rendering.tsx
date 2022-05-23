@@ -11,10 +11,9 @@ import {
 } from "@/lib/ColorAnalyzer";
 import VibrantBlock from "@/components/VibrantBlock";
 import { mq } from "@/utils/mq";
-import { useEffect, useState } from "react";
 
-type FrontendPageProps = {
-  origin: string;
+type ServerRenderingPageProps = {
+  vibrantResultListString: string;
 };
 
 const Container = styled("div")`
@@ -63,7 +62,61 @@ const Footer = styled("footer")`
   }
 `;
 
-const FrontendPage: NextPage<FrontendPageProps> = ({ origin }) => {
+const ServerRenderingPage: NextPage<ServerRenderingPageProps> = ({
+  vibrantResultListString,
+}) => {
+  const vibrantResultList: VibrantResult[] = JSON.parse(
+    vibrantResultListString
+  );
+
+  return (
+    <Container>
+      <Head>
+        <title>node-vibrant example</title>
+        <meta name="description" content="node-vibrant example" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Main>
+        <Title>Welcome to node-vibrant example</Title>
+        <p>
+          <a
+            href="https://github.com/cubdesign/node-vibrant-example"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            https://github.com/cubdesign/node-vibrant-example
+          </a>
+        </p>
+
+        {vibrantResultList.map(
+          (vibrantResult: VibrantResult, index: number) => {
+            return (
+              <VibrantBlock
+                key={`VibrantBlock${index}`}
+                vibrantResult={vibrantResult}
+              />
+            );
+          }
+        )}
+      </Main>
+
+      <Footer>
+        <a
+          href="https://cubdesign.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          &copy; cubdesign
+        </a>
+      </Footer>
+    </Container>
+  );
+};
+
+export default ServerRenderingPage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const vibrantSourceList: VibrantSource[] = [
     {
       emoji: "👾",
@@ -108,78 +161,15 @@ const FrontendPage: NextPage<FrontendPageProps> = ({ origin }) => {
     },
   ];
 
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const [vibrantResultList, setVibrantResultList] = useState<VibrantResult[]>(
-    []
-  );
-
-  useEffect(() => {
-    const load = async () => {
-      const vibrantResultList: VibrantResult[] = await getVibrantList(
-        vibrantSourceList,
-        origin
-      );
-      setLoading(false);
-      setVibrantResultList(vibrantResultList);
-    };
-
-    load();
-  }, []);
-
-  return (
-    <Container>
-      <Head>
-        <title>node-vibrant example</title>
-        <meta name="description" content="node-vibrant example" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Main>
-        <Title>Welcome to node-vibrant example</Title>
-        <p>
-          <a
-            href="https://github.com/cubdesign/node-vibrant-example"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            https://github.com/cubdesign/node-vibrant-example
-          </a>
-        </p>
-        {loading
-          ? "now loading ..."
-          : vibrantResultList.map(
-              (vibrantResult: VibrantResult, index: number) => {
-                return (
-                  <VibrantBlock
-                    key={`VibrantBlock${index}`}
-                    vibrantResult={vibrantResult}
-                  />
-                );
-              }
-            )}
-      </Main>
-
-      <Footer>
-        <a
-          href="https://cubdesign.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          &copy; cubdesign
-        </a>
-      </Footer>
-    </Container>
-  );
-};
-
-export default FrontendPage;
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
   const { origin } = absoluteUrl(context.req);
 
-  const props: FrontendPageProps = {
-    origin: origin,
+  const vibrantResultList: VibrantResult[] = await getVibrantList(
+    vibrantSourceList,
+    origin
+  );
+
+  const props: ServerRenderingPageProps = {
+    vibrantResultListString: JSON.stringify(vibrantResultList),
   };
 
   return {
