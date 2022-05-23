@@ -1,3 +1,4 @@
+import { mq } from "@/utils/mq";
 import styled from "@emotion/styled";
 import Head from "next/head";
 import { ReactElement } from "react";
@@ -10,18 +11,27 @@ type DefaultLayoutProps = {
   children: ReactElement;
 };
 
-const Container = styled("div")`
-  padding: 0 2rem;
-`;
+const Container = styled("div")``;
 
 const Main = styled("main")`
   min-height: 100vh;
-  padding: 4rem 0;
+  padding: 2rem 2rem;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+export const Title = styled("h1")`
+  margin: 0;
+  line-height: 1.15;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  ${mq("sm")} {
+    font-size: 4rem;
+  }
 `;
 
 const DefaultLayout: React.FC<DefaultLayoutProps> = ({

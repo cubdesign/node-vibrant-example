@@ -11,22 +11,11 @@ import {
 import VibrantBlock from "@/components/VibrantBlock";
 import { mq } from "@/utils/mq";
 import { ReactElement } from "react";
-import DefaultLayout from "@/components/layouts/defaultLayout";
+import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 
 type ServerRenderingPageProps = {
   vibrantResultListString: string;
 };
-
-const Title = styled("h1")`
-  margin: 0;
-  line-height: 1.15;
-  font-size: 2rem;
-  text-align: center;
-
-  ${mq("sm")} {
-    font-size: 4rem;
-  }
-`;
 
 const ServerRenderingPage: NextPageWithLayout<ServerRenderingPageProps> = ({
   vibrantResultListString,
@@ -37,16 +26,7 @@ const ServerRenderingPage: NextPageWithLayout<ServerRenderingPageProps> = ({
 
   return (
     <>
-      <Title>Welcome to node-vibrant example</Title>
-      <p>
-        <a
-          href="https://github.com/cubdesign/node-vibrant-example"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          https://github.com/cubdesign/node-vibrant-example
-        </a>
-      </p>
+      <Title>node-vibrant example ( SSR )</Title>
 
       {vibrantResultList.map((vibrantResult: VibrantResult, index: number) => {
         return (
@@ -63,8 +43,8 @@ const ServerRenderingPage: NextPageWithLayout<ServerRenderingPageProps> = ({
 ServerRenderingPage.getLayout = (page: ReactElement) => {
   return (
     <DefaultLayout
-      title="node-vibrant example"
-      description="node-vibrant example"
+      title="node-vibrant example ( SSR )"
+      description="node-vibrant example ( SSR )"
     >
       {page}
     </DefaultLayout>

@@ -12,22 +12,11 @@ import {
 import VibrantBlock from "@/components/VibrantBlock";
 import { mq } from "@/utils/mq";
 import { ReactElement, useEffect, useState } from "react";
-import DefaultLayout from "@/components/layouts/defaultLayout";
+import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 
 type FrontendPageProps = {
   origin: string;
 };
-
-const Title = styled("h1")`
-  margin: 0;
-  line-height: 1.15;
-  font-size: 2rem;
-  text-align: center;
-
-  ${mq("sm")} {
-    font-size: 4rem;
-  }
-`;
 
 const FrontendPage: NextPageWithLayout<FrontendPageProps> = ({ origin }) => {
   const vibrantSourceList: VibrantSource[] = [
@@ -95,16 +84,7 @@ const FrontendPage: NextPageWithLayout<FrontendPageProps> = ({ origin }) => {
 
   return (
     <>
-      <Title>Welcome to node-vibrant example</Title>
-      <p>
-        <a
-          href="https://github.com/cubdesign/node-vibrant-example"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          https://github.com/cubdesign/node-vibrant-example
-        </a>
-      </p>
+      <Title>node-vibrant example ( CSR )</Title>
       {loading
         ? "now loading ..."
         : vibrantResultList.map(
@@ -124,8 +104,8 @@ const FrontendPage: NextPageWithLayout<FrontendPageProps> = ({ origin }) => {
 FrontendPage.getLayout = (page: ReactElement) => {
   return (
     <DefaultLayout
-      title="node-vibrant example"
-      description="node-vibrant example"
+      title="node-vibrant example ( CSR )"
+      description="node-vibrant example ( CSR )"
     >
       {page}
     </DefaultLayout>

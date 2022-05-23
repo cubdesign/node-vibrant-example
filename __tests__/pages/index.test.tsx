@@ -6,6 +6,6 @@ describe("FrontendPage", () => {
     const origin: string = "http://localhost:3000";
 
     render(<FrontendPage origin={origin} />);
-    expect(screen.getByText(/Welcome/)).toBeInTheDocument();
+    expect(screen.getByText(/vibrant/)).toBeInTheDocument();
   });
 });
