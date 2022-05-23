@@ -1,9 +1,11 @@
 import { mq } from "@/utils/mq";
 import styled from "@emotion/styled";
 import Head from "next/head";
-import { ReactElement } from "react";
+import { useRouter } from "next/router";
+import { ReactElement, useEffect, useState } from "react";
 import Footer from "../ui/Footer";
 import Header from "../ui/Header";
+import PageLoading from "../ui/PageLoading";
 
 type DefaultLayoutProps = {
   title: string;
@@ -39,6 +41,26 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   description,
   children,
 }) => {
+  /*
+    ページ遷移時、loadingを表示させる。
+    loadingを入れないと、ページの変化に気づかない
+    
+    How to make Custom Loading Screen in Next.js Project
+    https://blog.bhagyamudgal.me/how-to-make-custom-loading-screen-in-nextjs-project
+  */
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const handleStart = (url: string) => {
+      url !== router.pathname ? setLoading(true) : setLoading(false);
+    };
+    const handleComplete = (url: string) => setLoading(false);
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+  }, [router]);
+
   return (
     <Container>
       <Head>
@@ -47,7 +69,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <Main>{children}</Main>
+      <Main>{loading ? <PageLoading /> : children}</Main>
       <Footer />
     </Container>
   );
