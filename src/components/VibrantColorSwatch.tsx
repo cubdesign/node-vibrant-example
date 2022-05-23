@@ -2,14 +2,19 @@ import { ratioInteger, RatioSwatch, rgbInteger } from "@/lib/ColorAnalyzer";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Vec3 } from "node-vibrant/lib/color";
-
+import Color from "color";
 export type VibrantColorSwatchProps = {
   ratioSwatch: RatioSwatch;
 };
 
-const backgroundDynamicStyle = ({ rgb }: { rgb: any }) => {
+const dynamicStyle = ({ rgb }: { rgb: any }) => {
+  const backgroundColor: string = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+  const textColor: string = Color(backgroundColor).isLight()
+    ? Color(backgroundColor).darken(0.8).toString()
+    : "inherit";
   return css`
-    background-color: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});
+    color: ${textColor};
+    background-color: ${backgroundColor};
   `;
 };
 
@@ -18,7 +23,7 @@ const Component = styled("div")`
   padding: 8px;
   margin-bottom: 8px;
   font-size: 12px;
-  ${backgroundDynamicStyle}
+  ${dynamicStyle}
 `;
 
 const ComponentInner = styled("div")`
