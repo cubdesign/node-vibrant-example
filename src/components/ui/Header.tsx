@@ -22,9 +22,15 @@ const Logo = styled("div")`
     text-align: center;
     background-color: #521188;
 
-    &:hover,
     &:active {
       background-color: #d7de06;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      // タッチデバイス以外（タッチデバイスだとhoverが残り続ける）
+      &:hover {
+        background-color: #d7de06;
+      }
     }
   }
 `;
@@ -54,9 +60,14 @@ const NavItem = styled("li")`
     text-align: center;
     background-color: #be0fbe;
 
-    &:hover,
     &:active {
       background-color: #09dd5a;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      // タッチデバイス以外（タッチデバイスだとhoverが残り続ける）
+      &:hover {
+        background-color: #09dd5a;
+      }
     }
   }
 
