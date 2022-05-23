@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
-import PlaygroundPage from "@/pages/index";
+import ClientRenderingPage from "@/pages/client-rendering";
 
-describe("PlaygroundPage", () => {
+describe("ClientRenderingPage", () => {
   it("renders a heading", () => {
     const origin: string = "http://localhost:3000";
 
-    render(<PlaygroundPage origin={origin} />);
+    render(<ClientRenderingPage origin={origin} />);
     expect(screen.getByText(/vibrant/)).toBeInTheDocument();
   });
 });

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const StyledHeader = styled("header")`
   a {
@@ -58,9 +59,18 @@ const NavItem = styled("li")`
       background-color: #09dd5a;
     }
   }
+
+  a.active {
+    &::before {
+      content: "🍬";
+      padding-right: 8px;
+    }
+  }
 `;
 
 const Header = () => {
+  const router = useRouter();
+
   return (
     <StyledHeader>
       <AppBar>
@@ -72,17 +82,31 @@ const Header = () => {
         <Nav>
           <NavItem>
             <Link href="/">
-              <a>Playground</a>
+              <a className={router.pathname == "/" ? "active" : ""}>
+                Playground
+              </a>
             </Link>
           </NavItem>
           <NavItem>
-            <Link href="/">
-              <a>CSR</a>
+            <Link href="/client-rendering">
+              <a
+                className={
+                  router.pathname == "/client-rendering" ? "active" : ""
+                }
+              >
+                CSR
+              </a>
             </Link>
           </NavItem>
           <NavItem>
-            <Link href="/server-rendering" passHref>
-              <a>SSR</a>
+            <Link href="/server-rendering">
+              <a
+                className={
+                  router.pathname == "/server-rendering" ? "active" : ""
+                }
+              >
+                SSR
+              </a>
             </Link>
           </NavItem>
           <NavItem>

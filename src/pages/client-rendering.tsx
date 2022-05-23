@@ -14,11 +14,11 @@ import { mq } from "@/utils/mq";
 import { ReactElement, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 
-type PlaygroundPageProps = {
+type ClientRenderingPageProps = {
   origin: string;
 };
 
-const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
+const ClientRenderingPage: NextPageWithLayout<ClientRenderingPageProps> = ({
   origin,
 }) => {
   const vibrantSourceList: VibrantSource[] = [
@@ -86,7 +86,7 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
 
   return (
     <>
-      <Title>node-vibrant example ( Playground )</Title>
+      <Title>node-vibrant example ( CSR )</Title>
       {loading
         ? "now loading ..."
         : vibrantResultList.map(
@@ -103,11 +103,11 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   );
 };
 
-PlaygroundPage.getLayout = (page: ReactElement) => {
+ClientRenderingPage.getLayout = (page: ReactElement) => {
   return (
     <DefaultLayout
-      title="node-vibrant example ( Playground )"
-      description="node-vibrant example ( Playground )"
+      title="node-vibrant example ( CSR )"
+      description="node-vibrant example ( CSR )"
     >
       {page}
     </DefaultLayout>
@@ -117,7 +117,7 @@ PlaygroundPage.getLayout = (page: ReactElement) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { origin } = absoluteUrl(context.req);
 
-  const props: PlaygroundPageProps = {
+  const props: ClientRenderingPageProps = {
     origin: origin,
   };
 
@@ -126,4 +126,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default PlaygroundPage;
+export default ClientRenderingPage;
