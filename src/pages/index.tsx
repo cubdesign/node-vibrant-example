@@ -11,11 +11,45 @@ import {
 
 import VibrantBlock from "@/components/VibrantBlock";
 import { mq } from "@/utils/mq";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
+import { useDropzone } from "react-dropzone";
 
 type PlaygroundPageProps = {
   origin: string;
+};
+
+const MyDropzone = () => {
+  const onDrop = useCallback((acceptedFiles: any[]) => {
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onabort = () => console.log("file reading was aborted");
+      reader.onerror = () => console.log("file reading has failed");
+      reader.onload = () => {
+        // Do whatever you want with the file contents
+        const binaryStr = reader.result;
+        console.log(binaryStr);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  return (
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      <p
+        style={{
+          backgroundColor: "#dad6d6",
+          padding: "3rem 10rem",
+        }}
+      >
+        Drag &apos;n&lsquo; drop some files here, or click to select files
+      </p>
+    </div>
+  );
 };
 
 const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
@@ -87,6 +121,14 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   return (
     <>
       <Title>node-vibrant example ( Playground )</Title>
+
+      <div>
+        <h2>emoji</h2>
+        <input type={"text"} />
+        <h2>画像</h2>
+        <MyDropzone></MyDropzone>
+      </div>
+
       {loading
         ? "now loading ..."
         : vibrantResultList.map(

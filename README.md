@@ -39,3 +39,9 @@ https://github.com/dtao/nearest-color
 
 Twemoji Parser
 https://github.com/twitter/twemoji-parser
+
+COLOR THIEF
+https://lokeshdhakar.com/projects/color-thief/
+
+react-dropzone
+https://react-dropzone.js.org/
