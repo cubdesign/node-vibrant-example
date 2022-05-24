@@ -19,20 +19,55 @@ type PlaygroundPageProps = {
   origin: string;
 };
 
-const MyDropzone = () => {
-  const onDrop = useCallback((acceptedFiles: any[]) => {
-    acceptedFiles.forEach((file) => {
-      const reader = new FileReader();
+// previewを追加
+type ExtendFile = File & {
+  preview: string;
+};
 
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
-      reader.onload = () => {
-        // Do whatever you want with the file contents
-        const binaryStr = reader.result;
-        console.log(binaryStr);
-      };
-      reader.readAsArrayBuffer(file);
-    });
+const MyDropzone = () => {
+  const [files, setFiles] = useState<ExtendFile[]>([]);
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    // acceptedFiles.forEach((file) => {
+    //   const reader = new FileReader();
+
+    //   reader.onabort = () => console.log("file reading was aborted");
+    //   reader.onerror = () => console.log("file reading has failed");
+    //   reader.onload = () => {
+    //     // Do whatever you want with the file contents
+    //     const binaryStr = reader.result;
+    //     console.log(binaryStr);
+    //   };
+    //   reader.readAsArrayBuffer(file);
+    // });
+    setFiles(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
+  }, []);
+
+  const thumbs = files.map((file: ExtendFile) => (
+    <div key={file.name}>
+      <img
+        src={file.preview}
+        // Revoke data uri after image is loaded
+        onLoad={() => {
+          URL.revokeObjectURL(file.preview);
+        }}
+        style={{
+          maxWidth: "100px",
+        }}
+        alt={file.name}
+      />
+    </div>
+  ));
+
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -42,12 +77,20 @@ const MyDropzone = () => {
       <input {...getInputProps()} />
       <p
         style={{
-          backgroundColor: "#dad6d6",
+          backgroundColor: "#676767",
           padding: "3rem 10rem",
         }}
       >
         Drag &apos;n&lsquo; drop some files here, or click to select files
       </p>
+      <aside
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        {thumbs}
+      </aside>
     </div>
   );
 };

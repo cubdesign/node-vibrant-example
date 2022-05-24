@@ -216,7 +216,7 @@ const getVibrantList = async (
         ? source.file!
         : getExtendsEmojiEntities(source.emoji!)[0].url;
 
-    const imageURL: string = /^(https:|http:)/.test(filePath)
+    const imageURL: string = /^(https:|http:|blob:)/.test(filePath)
       ? filePath
       : getImageURLFromOrigin(filePath, origin);
 

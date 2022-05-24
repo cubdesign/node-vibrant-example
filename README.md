@@ -45,3 +45,6 @@ https://lokeshdhakar.com/projects/color-thief/
 
 react-dropzone
 https://react-dropzone.js.org/
+
+react-dropzone typescript
+https://qiita.com/tetsurotayama/items/5129f0cfb21f9ec9b9a0
