@@ -98,7 +98,7 @@ const MyDropzone = () => {
 const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   origin,
 }) => {
-  const vibrantSourceList: VibrantSource[] = [
+  const initialVibrantSourceList: VibrantSource[] = [
     {
       emoji: "👾",
       type: "emoji",
@@ -144,22 +144,42 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [vibrantSourceList, setVibrantSourceList] = useState<VibrantSource[]>(
+    initialVibrantSourceList
+  );
+
   const [vibrantResultList, setVibrantResultList] = useState<VibrantResult[]>(
     []
   );
 
-  useEffect(() => {
-    const load = async () => {
-      const vibrantResultList: VibrantResult[] = await getVibrantList(
-        vibrantSourceList,
-        origin
-      );
-      setLoading(false);
-      setVibrantResultList(vibrantResultList);
-    };
+  const load = async () => {
+    const vibrantResultList: VibrantResult[] = await getVibrantList(
+      vibrantSourceList,
+      origin
+    );
+    setLoading(false);
+    setVibrantResultList(vibrantResultList);
+  };
 
+  useEffect(() => {
     load();
   }, []);
+
+  const onClickButton = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    setVibrantSourceList([
+      {
+        emoji: "🥎",
+        type: "emoji",
+      },
+      {
+        emoji: "🍙",
+        type: "emoji",
+      },
+    ]);
+    load();
+  };
 
   return (
     <>
@@ -170,6 +190,9 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
         <input type={"text"} />
         <h2>画像</h2>
         <MyDropzone></MyDropzone>
+        <button type="button" onClick={onClickButton}>
+          get vibrant
+        </button>
       </div>
 
       {loading
