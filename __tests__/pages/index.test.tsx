@@ -6,6 +6,6 @@ describe("PlaygroundPage", () => {
     const origin: string = "http://localhost:3000";
 
     render(<PlaygroundPage origin={origin} />);
-    expect(screen.getByText(/vibrant/)).toBeInTheDocument();
+    expect(screen.getByText(/Playground/)).toBeInTheDocument();
   });
 });

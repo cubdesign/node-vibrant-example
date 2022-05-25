@@ -8,6 +8,6 @@ describe("ServerRenderingPage", () => {
     render(
       <ServerRenderingPage vibrantResultListString={vibrantResultListString} />
     );
-    expect(screen.getByText(/vibrant/)).toBeInTheDocument();
+    expect(screen.getByText(/SSR/)).toBeInTheDocument();
   });
 });

@@ -28,18 +28,6 @@ const MyDropzone = () => {
   const [files, setFiles] = useState<ExtendFile[]>([]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    // acceptedFiles.forEach((file) => {
-    //   const reader = new FileReader();
-
-    //   reader.onabort = () => console.log("file reading was aborted");
-    //   reader.onerror = () => console.log("file reading has failed");
-    //   reader.onload = () => {
-    //     // Do whatever you want with the file contents
-    //     const binaryStr = reader.result;
-    //     console.log(binaryStr);
-    //   };
-    //   reader.readAsArrayBuffer(file);
-    // });
     setFiles(
       acceptedFiles.map((file) =>
         Object.assign(file, {
@@ -95,54 +83,54 @@ const MyDropzone = () => {
   );
 };
 
+const initialVibrantSourceList: VibrantSource[] = [
+  {
+    emoji: "👾",
+    type: "emoji",
+  },
+  {
+    emoji: "🎁",
+    type: "emoji",
+  },
+  {
+    emoji: "💨",
+    type: "emoji",
+  },
+  {
+    emoji: "😅",
+    type: "emoji",
+  },
+  {
+    emoji: "🙅🏻‍♂️",
+    type: "emoji",
+  },
+  {
+    file: "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
+    type: "image",
+  },
+  {
+    file: "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
+    type: "image",
+  },
+  {
+    file: "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
+    type: "image",
+  },
+
+  {
+    file: "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
+    type: "image",
+  },
+  {
+    file: "/images/david-clode-fT2qXggBlks-unsplash.jpg",
+    type: "image",
+  },
+];
+
 const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   origin,
 }) => {
-  const initialVibrantSourceList: VibrantSource[] = [
-    {
-      emoji: "👾",
-      type: "emoji",
-    },
-    {
-      emoji: "🎁",
-      type: "emoji",
-    },
-    {
-      emoji: "💨",
-      type: "emoji",
-    },
-    {
-      emoji: "😅",
-      type: "emoji",
-    },
-    {
-      emoji: "🙅🏻‍♂️",
-      type: "emoji",
-    },
-    {
-      file: "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
-      type: "image",
-    },
-    {
-      file: "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
-      type: "image",
-    },
-    {
-      file: "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
-      type: "image",
-    },
-
-    {
-      file: "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
-      type: "image",
-    },
-    {
-      file: "/images/david-clode-fT2qXggBlks-unsplash.jpg",
-      type: "image",
-    },
-  ];
-
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [vibrantSourceList, setVibrantSourceList] = useState<VibrantSource[]>(
     initialVibrantSourceList
@@ -152,18 +140,21 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
     []
   );
 
-  const load = async () => {
+  const load = useCallback(async () => {
+    console.log("load()");
     const vibrantResultList: VibrantResult[] = await getVibrantList(
       vibrantSourceList,
       origin
     );
     setLoading(false);
     setVibrantResultList(vibrantResultList);
-  };
+  }, [vibrantSourceList, origin]);
 
   useEffect(() => {
+    console.log("useEffect() vibrantSourceList");
+    setLoading(false);
     load();
-  }, []);
+  }, [vibrantSourceList, load]);
 
   const onClickButton = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -178,7 +169,6 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
         type: "emoji",
       },
     ]);
-    load();
   };
 
   return (

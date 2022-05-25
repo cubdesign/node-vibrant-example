@@ -6,6 +6,6 @@ describe("ClientRenderingPage", () => {
     const origin: string = "http://localhost:3000";
 
     render(<ClientRenderingPage origin={origin} />);
-    expect(screen.getByText(/vibrant/)).toBeInTheDocument();
+    expect(screen.getByText(/CSR/)).toBeInTheDocument();
   });
 });
