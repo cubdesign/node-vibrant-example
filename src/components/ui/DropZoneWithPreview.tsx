@@ -1,3 +1,4 @@
+import { getFileName } from "@/utils/fileUtils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -7,7 +8,8 @@ type ExtendFile = File & {
 };
 
 type DropZoneWithPreviewProps = {
-  defaultValue: string[];
+  defaultValue?: string[];
+  onChange?: (images: string[]) => void;
 };
 
 const isSameFile = (a: File, b: File): boolean => {
@@ -21,41 +23,85 @@ const hasFile = (files: File[], targetFile: File): boolean => {
 
 const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
   defaultValue,
+  onChange,
 }) => {
   const [files, setFiles] = useState<ExtendFile[]>([]);
+  const [initDefaultValue, setInitDefaultValue] = useState<boolean>(false);
 
   useEffect(() => {
-    /*
-  fetch(urlString)
-    .then(response => response.blob())
-    .then(blob => new File([blob], "image.jpg"))
-    .then(file => {
-      // fileはFileオブジェクト
-    })
-  
-    */
-  }, [defaultValue]);
+    const fetchAll = () => {
+      Promise.all(
+        defaultValue!.map((url) => {
+          return fetch(url)
+            .then((response) => response.blob())
+            .then(
+              (blob) =>
+                new File(
+                  [blob],
+                  getFileName(url) ? getFileName(url) : "image.jpg"
+                )
+            )
+            .then(
+              (file): ExtendFile =>
+                Object.assign(file, {
+                  preview: URL.createObjectURL(file),
+                })
+            );
+        })
+      ).then((loadFile) => {
+        // TODO ごちゃごちゃしてる
+        const newFiles: ExtendFile[] = [...files, ...loadFile];
+        setFiles(newFiles);
+        if (onChange) {
+          onChange(
+            newFiles.map((file: ExtendFile) => {
+              return file.preview;
+            })
+          );
+        }
+        setInitDefaultValue(true);
+      });
+    };
+
+    if (!initDefaultValue) {
+      if (defaultValue && defaultValue.length > 0) {
+        fetchAll();
+      } else {
+        // デフォルト無し
+        setInitDefaultValue(true);
+      }
+    }
+  }, []);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const newFiles: ExtendFile[] = [];
+      const loadFiles: ExtendFile[] = [];
       for (let i: number = 0; i < acceptedFiles.length; i++) {
         const acceptedFile: File = acceptedFiles[i];
-        const newFile: ExtendFile = Object.assign(acceptedFile, {
+        const loadFile: ExtendFile = Object.assign(acceptedFile, {
           preview: URL.createObjectURL(acceptedFile),
         });
 
-        if (!hasFile(files, newFile)) {
+        if (!hasFile(files, loadFile)) {
           // 違うファイル
-          newFiles.push(newFile);
+          loadFiles.push(loadFile);
         } else {
           // 同じファイル
-          URL.revokeObjectURL(newFile.preview);
+          URL.revokeObjectURL(loadFile.preview);
         }
       }
-      setFiles([...files, ...newFiles]);
+      // TODO ごちゃごちゃしてる
+      const newFiles: ExtendFile[] = [...files, ...loadFiles];
+      setFiles(newFiles);
+      if (onChange) {
+        onChange(
+          newFiles.map((file: ExtendFile) => {
+            return file.preview;
+          })
+        );
+      }
     },
-    [files]
+    [files, onChange]
   );
 
   const thumbnails = useMemo(() => {
@@ -66,7 +112,7 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
             src={file.preview}
             // Revoke data uri after image is loaded
             onLoad={() => {
-              URL.revokeObjectURL(file.preview);
+              // URL.revokeObjectURL(file.preview);
             }}
             style={{
               maxWidth: "100px",

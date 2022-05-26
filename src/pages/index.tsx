@@ -3,6 +3,7 @@ import type { GetServerSideProps, NextPageWithLayout } from "next";
 import absoluteUrl from "next-absolute-url";
 
 import {
+  getEmojiListFromString,
   getVibrantList,
   VibrantResult,
   VibrantSource,
@@ -12,6 +13,7 @@ import VibrantBlock from "@/components/VibrantBlock";
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 import DropZoneWithPreview from "@/components/ui/DropZoneWithPreview";
+import { getImageURLFromOrigin } from "@/utils/fileUtils";
 
 type PlaygroundPageProps = {
   origin: string;
@@ -92,20 +94,46 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const [vibrantSourceList, setVibrantSourceList] = useState<VibrantSource[]>(
-    initialVibrantSourceList
+    []
   );
 
   const [vibrantResultList, setVibrantResultList] = useState<VibrantResult[]>(
     []
   );
 
-  const [inputEmoji, setInputEmoji] = useState<string>(
-    initialInputValue.inputEmoji.join("")
-  );
+  const [inputEmoji, setInputEmoji] = useState<string>("🥎🍙");
 
-  const [inputImage, setInputImage] = useState<string[]>(
-    initialInputValue.inputImage
-  );
+  const [inputImage, setInputImage] = useState<string[]>([
+    getImageURLFromOrigin(
+      "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
+      origin
+    ),
+    getImageURLFromOrigin("/images/max-zhang-gkdyrA_eOo8-unsplash.jpg", origin),
+  ]);
+
+  const createVibrantSourceList = () => {
+    const inputEmojiList: VibrantSource[] = getEmojiListFromString(
+      inputEmoji
+    ).map((emoji) => {
+      return {
+        emoji: emoji,
+        type: "emoji",
+      };
+    });
+
+    const inputImageList: VibrantSource[] = inputImage.map((file) => {
+      return {
+        file: file,
+        type: "image",
+      };
+    });
+
+    setVibrantSourceList([...inputEmojiList, ...inputImageList]);
+  };
+
+  useEffect(() => {
+    createVibrantSourceList();
+  }, []);
 
   const load = useCallback(async () => {
     const vibrantResultList: VibrantResult[] = await getVibrantList(
@@ -124,20 +152,7 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   const onClickButton = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    setVibrantSourceList([
-      {
-        emoji: "🥎",
-        type: "emoji",
-      },
-      {
-        emoji: "🍙",
-        type: "emoji",
-      },
-      {
-        file: "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
-        type: "image",
-      },
-    ]);
+    createVibrantSourceList();
   };
 
   return (
@@ -148,7 +163,10 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
         <h2>emoji</h2>
         <input
           type={"text"}
-          defaultValue={inputEmoji}
+          value={inputEmoji}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            setInputEmoji(event.target.value.trim())
+          }
           style={{
             fontSize: "3rem",
             padding: "16px",
@@ -156,7 +174,12 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
           }}
         />
         <h2>画像</h2>
-        <DropZoneWithPreview defaultValue={inputImage}></DropZoneWithPreview>
+        <DropZoneWithPreview
+          defaultValue={inputImage}
+          onChange={(images: string[]) => {
+            setInputImage(images);
+          }}
+        ></DropZoneWithPreview>
         <button type="button" onClick={onClickButton}>
           get vibrant
         </button>

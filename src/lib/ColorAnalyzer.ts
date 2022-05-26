@@ -1,3 +1,4 @@
+import { getImageURLFromOrigin } from "@/utils/fileUtils";
 import Vibrant from "node-vibrant";
 import { Palette, Swatch, Vec3 } from "node-vibrant/lib/color";
 import { EmojiEntity, parse } from "twemoji-parser";
@@ -53,9 +54,15 @@ const ratioInteger = (ratio: number): number => {
   return Math.floor(ratio);
 };
 
-const getImageURLFromOrigin = (imagePath: string, origin: string): string => {
-  const imageURL: string = `${origin}${imagePath}`;
-  return imageURL;
+/**
+ * 文字列の中の絵文字を抽出して配列で返す
+ *
+ * @param text 絵文字入りの文字（絵文字複数可）
+ */
+const getEmojiListFromString = (text: string): string[] => {
+  const emojiEntities: EmojiEntity[] = parse(text);
+
+  return emojiEntities.map((emoji) => emoji.text);
 };
 
 /**
@@ -216,9 +223,7 @@ const getVibrantList = async (
         ? source.file!
         : getExtendsEmojiEntities(source.emoji!)[0].url;
 
-    const imageURL: string = /^(https:|http:|blob:)/.test(filePath)
-      ? filePath
-      : getImageURLFromOrigin(filePath, origin);
+    const imageURL: string = getImageURLFromOrigin(filePath, origin);
 
     // 絵文字は、画像が64x64と小さいのでクオリティを上げる
     const quality: number = source.type === "image" ? 5 : 1;
@@ -240,6 +245,7 @@ const getVibrantList = async (
 export {
   rgbInteger,
   ratioInteger,
+  getEmojiListFromString,
   getRatioSwatch,
   getTopRatioSwatch,
   getCSSGradientRGBList,
@@ -248,6 +254,7 @@ export {
 const ColorAnalyzer = {
   rgbInteger,
   ratioInteger,
+  getEmojiListFromString,
   getRatioSwatch,
   getTopRatioSwatch,
   getCSSGradientRGBList,
