@@ -28,8 +28,8 @@ type InitialInputValue = {
 const InputBlock = styled("div")`
   width: 90%;
   padding: 1rem;
-  border: solid 5px #73f608;
-  margin-bottom: 32px;
+  border: solid 3px #ffffff;
+  margin-bottom: 48px;
 
   text-align: center;
   h2 {
@@ -45,9 +45,23 @@ const EmojiInput = styled("input")`
 `;
 
 const Button = styled("button")`
+  display: none;
+
   padding: 1rem;
   width: 50%;
   margin-top: 32px;
+  color: #ffffff;
+  background-color: #be0fbe;
+  border: none;
+  &:active {
+    background-color: #09dd5a;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    // タッチデバイス以外（タッチデバイスだとhoverが残り続ける）
+    &:hover {
+      background-color: #09dd5a;
+    }
+  }
 `;
 
 const initialVibrantSourceList: VibrantSource[] = [
@@ -137,7 +151,7 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
     getImageURLFromOrigin("/images/max-zhang-gkdyrA_eOo8-unsplash.jpg", origin),
   ]);
 
-  const createVibrantSourceList = () => {
+  const createVibrantSourceList = useCallback(() => {
     const inputEmojiList: VibrantSource[] = getEmojiListFromString(
       inputEmoji
     ).map((emoji) => {
@@ -155,7 +169,12 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
     });
 
     setVibrantSourceList([...inputEmojiList, ...inputImageList]);
-  };
+  }, [inputEmoji, inputImage]);
+
+  useEffect(() => {
+    //TODO useCallback、実際はうまくいっている気がする
+    createVibrantSourceList();
+  }, [inputEmoji, inputImage]);
 
   useEffect(() => {
     createVibrantSourceList();
@@ -190,9 +209,9 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
         <EmojiInput
           type={"text"}
           value={inputEmoji}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            setInputEmoji(event.target.value.trim())
-          }
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setInputEmoji(event.target.value.trim());
+          }}
         />
         <h2>image</h2>
         <DropZoneWithPreview
