@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import type { GetServerSideProps, NextPageWithLayout } from "next";
 
 import absoluteUrl from "next-absolute-url";
@@ -10,77 +9,12 @@ import {
 } from "@/lib/ColorAnalyzer";
 
 import VibrantBlock from "@/components/VibrantBlock";
-import { mq } from "@/utils/mq";
-import { ReactElement, useCallback, useEffect, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
-import { useDropzone } from "react-dropzone";
+import DropZoneWithPreview from "@/components/ui/DropzoneWithPreview";
 
 type PlaygroundPageProps = {
   origin: string;
-};
-
-// previewを追加
-type ExtendFile = File & {
-  preview: string;
-};
-
-const MyDropzone = () => {
-  const [files, setFiles] = useState<ExtendFile[]>([]);
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(
-      acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      )
-    );
-  }, []);
-
-  const thumbs = files.map((file: ExtendFile) => (
-    <div key={file.name}>
-      <img
-        src={file.preview}
-        // Revoke data uri after image is loaded
-        onLoad={() => {
-          URL.revokeObjectURL(file.preview);
-        }}
-        style={{
-          maxWidth: "100px",
-        }}
-        alt={file.name}
-      />
-    </div>
-  ));
-
-  useEffect(() => {
-    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
-
-  return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      <p
-        style={{
-          backgroundColor: "#676767",
-          padding: "3rem 10rem",
-        }}
-      >
-        Drag &apos;n&lsquo; drop some files here, or click to select files
-      </p>
-      <aside
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-        }}
-      >
-        {thumbs}
-      </aside>
-    </div>
-  );
 };
 
 const initialVibrantSourceList: VibrantSource[] = [
@@ -127,6 +61,31 @@ const initialVibrantSourceList: VibrantSource[] = [
   },
 ];
 
+type InitialInputValue = {
+  inputEmoji: string[];
+  inputImage: string[];
+};
+
+const createInitialInputValue = () => {
+  const initialInputValue: InitialInputValue = {
+    inputEmoji: [],
+    inputImage: [],
+  };
+
+  for (let i: number = 0; i < initialVibrantSourceList.length; i++) {
+    const source = initialVibrantSourceList[i];
+    if (source.type === "emoji") {
+      initialInputValue.inputEmoji.push(source.emoji!);
+    } else {
+      initialInputValue.inputImage.push(source.file!);
+    }
+  }
+
+  return initialInputValue;
+};
+
+const initialInputValue = createInitialInputValue();
+
 const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   origin,
 }) => {
@@ -140,8 +99,15 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
     []
   );
 
+  const [inputEmoji, setInputEmoji] = useState<string>(
+    initialInputValue.inputEmoji.join("")
+  );
+
+  const [inputImage, setInputImage] = useState<string[]>(
+    initialInputValue.inputImage
+  );
+
   const load = useCallback(async () => {
-    console.log("load()");
     const vibrantResultList: VibrantResult[] = await getVibrantList(
       vibrantSourceList,
       origin
@@ -151,7 +117,6 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   }, [vibrantSourceList, origin]);
 
   useEffect(() => {
-    console.log("useEffect() vibrantSourceList");
     setLoading(false);
     load();
   }, [vibrantSourceList, load]);
@@ -168,6 +133,10 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
         emoji: "🍙",
         type: "emoji",
       },
+      {
+        file: "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
+        type: "image",
+      },
     ]);
   };
 
@@ -177,9 +146,17 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
 
       <div>
         <h2>emoji</h2>
-        <input type={"text"} />
+        <input
+          type={"text"}
+          defaultValue={inputEmoji}
+          style={{
+            fontSize: "3rem",
+            padding: "16px",
+            width: "100%",
+          }}
+        />
         <h2>画像</h2>
-        <MyDropzone></MyDropzone>
+        <DropZoneWithPreview defaultValue={inputImage}></DropZoneWithPreview>
         <button type="button" onClick={onClickButton}>
           get vibrant
         </button>

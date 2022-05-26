@@ -108,11 +108,8 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
   const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
     vibrantResult.palette;
   const ratioSwatchList = getRatioSwatch(vibrantResult.palette);
-  // console.log("ratioSwatchList", ratioSwatchList);
-  // console.log("getTopRatioSwatch", getTopRatioSwatch(ratioSwatchList));
   const topRatioSwatch: RatioSwatch = getTopRatioSwatch(ratioSwatchList);
   const cssGradientRGBList: string[] = getCSSGradientRGBList(ratioSwatchList);
-  // console.log("cssGradientRGBList", cssGradientRGBList.join(","));
   return (
     <Container
       key={vibrantResult.imageURL}
