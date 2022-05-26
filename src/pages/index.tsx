@@ -22,7 +22,7 @@ type PlaygroundPageProps = {
 };
 
 type InitialInputValue = {
-  inputEmoji: string[];
+  inputEmoji: string;
   inputImage: string[];
 };
 
@@ -104,7 +104,6 @@ const initialVibrantSourceList: VibrantSource[] = [
     file: "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
     type: "image",
   },
-
   {
     file: "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
     type: "image",
@@ -115,30 +114,12 @@ const initialVibrantSourceList: VibrantSource[] = [
   },
 ];
 
-const createInitialInputValue = () => {
-  const initialInputValue: InitialInputValue = {
-    inputEmoji: [],
-    inputImage: [],
-  };
-
-  for (let i: number = 0; i < initialVibrantSourceList.length; i++) {
-    const source = initialVibrantSourceList[i];
-    if (source.type === "emoji") {
-      initialInputValue.inputEmoji.push(source.emoji!);
-    } else {
-      initialInputValue.inputImage.push(source.file!);
-    }
-  }
-
-  return initialInputValue;
-};
-
-const initialInputValue = createInitialInputValue();
-
 const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   origin,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [initInputValue, setInitInputValue] = useState<boolean>(false);
 
   const [vibrantSourceList, setVibrantSourceList] = useState<VibrantSource[]>(
     []
@@ -148,15 +129,39 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
     []
   );
 
-  const [inputEmoji, setInputEmoji] = useState<string>("🥎🍙");
+  const [inputEmoji, setInputEmoji] = useState<string>("");
 
-  const [inputImage, setInputImage] = useState<string[]>([
-    getImageURLFromOrigin(
-      "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
-      origin
-    ),
-    getImageURLFromOrigin("/images/max-zhang-gkdyrA_eOo8-unsplash.jpg", origin),
-  ]);
+  const [inputImage, setInputImage] = useState<string[]>([]);
+
+  const createInitialInputValue = () => {
+    // TODO　強引
+    if (initInputValue) {
+      return;
+    } else {
+      setInitInputValue(true);
+    }
+
+    const initialInputValue: InitialInputValue = {
+      inputEmoji: "",
+      inputImage: [],
+    };
+
+    for (let i: number = 0; i < initialVibrantSourceList.length; i++) {
+      const source = initialVibrantSourceList[i];
+      if (source.type === "emoji") {
+        initialInputValue.inputEmoji += source.emoji;
+      } else {
+        initialInputValue.inputImage.push(
+          getImageURLFromOrigin(source.file!, origin)
+        );
+      }
+    }
+
+    setInputEmoji(initialInputValue.inputEmoji);
+    setInputImage(initialInputValue.inputImage);
+  };
+
+  createInitialInputValue();
 
   const createVibrantSourceList = useCallback(() => {
     const inputEmojiList: VibrantSource[] = getEmojiListFromString(
