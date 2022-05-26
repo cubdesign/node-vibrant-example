@@ -144,7 +144,7 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
       <p
         style={{
           backgroundColor: "#676767",
-          padding: "3rem 10rem",
+          padding: "3rem 3rem",
         }}
       >
         Drag &apos;n&lsquo; drop some files here, or click to select files

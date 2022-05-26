@@ -14,10 +14,41 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 import DropZoneWithPreview from "@/components/ui/DropZoneWithPreview";
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
+import styled from "@emotion/styled";
 
 type PlaygroundPageProps = {
   origin: string;
 };
+
+type InitialInputValue = {
+  inputEmoji: string[];
+  inputImage: string[];
+};
+
+const InputBlock = styled("div")`
+  width: 90%;
+  padding: 1rem;
+  border: solid 5px #73f608;
+  margin-bottom: 32px;
+
+  text-align: center;
+  h2 {
+    text-align: left;
+  }
+`;
+
+const EmojiInput = styled("input")`
+  font-size: 3rem;
+  line-height: 3rem;
+  padding: 16px;
+  width: 100%;
+`;
+
+const Button = styled("button")`
+  padding: 1rem;
+  width: 50%;
+  margin-top: 32px;
+`;
 
 const initialVibrantSourceList: VibrantSource[] = [
   {
@@ -62,11 +93,6 @@ const initialVibrantSourceList: VibrantSource[] = [
     type: "image",
   },
 ];
-
-type InitialInputValue = {
-  inputEmoji: string[];
-  inputImage: string[];
-};
 
 const createInitialInputValue = () => {
   const initialInputValue: InitialInputValue = {
@@ -159,31 +185,26 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
     <>
       <Title>node-vibrant example ( Playground )</Title>
 
-      <div>
+      <InputBlock>
         <h2>emoji</h2>
-        <input
+        <EmojiInput
           type={"text"}
           value={inputEmoji}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
             setInputEmoji(event.target.value.trim())
           }
-          style={{
-            fontSize: "3rem",
-            padding: "16px",
-            width: "100%",
-          }}
         />
-        <h2>画像</h2>
+        <h2>image</h2>
         <DropZoneWithPreview
           defaultValue={inputImage}
           onChange={(images: string[]) => {
             setInputImage(images);
           }}
         ></DropZoneWithPreview>
-        <button type="button" onClick={onClickButton}>
-          get vibrant
-        </button>
-      </div>
+        <Button type="button" onClick={onClickButton}>
+          Play
+        </Button>
+      </InputBlock>
 
       {loading
         ? "now loading ..."
