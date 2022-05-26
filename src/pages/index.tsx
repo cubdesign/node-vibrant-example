@@ -11,7 +11,7 @@ import {
 import VibrantBlock from "@/components/VibrantBlock";
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
-import DropZoneWithPreview from "@/components/ui/DropzoneWithPreview";
+import DropZoneWithPreview from "@/components/ui/DropZoneWithPreview";
 
 type PlaygroundPageProps = {
   origin: string;
