@@ -31,6 +31,7 @@ const DropArea = styled("p")`
   padding: 1rem 3rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 100px;
   ${mq("sm")} {
     height: 200px;
@@ -43,7 +44,11 @@ const ThumbnailArea = styled("aside")`
 `;
 
 const Thumbnail = styled("img")`
-  max-width: 100px;
+  max-height: 30px;
+  margin-right: 8px;
+  ${mq("sm")} {
+    max-height: 60px;
+  }
 `;
 
 const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({

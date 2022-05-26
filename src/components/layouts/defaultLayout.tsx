@@ -28,11 +28,17 @@ const Main = styled("main")`
 export const Title = styled("h1")`
   margin: 0;
   line-height: 1.15;
-  font-size: 2rem;
+  font-size: 1.7rem;
   text-align: center;
   margin-bottom: 2rem;
   ${mq("sm")} {
-    font-size: 4rem;
+    font-size: 3rem;
+  }
+
+  br {
+    ${mq("lg")} {
+      display: none;
+    }
   }
 `;
 

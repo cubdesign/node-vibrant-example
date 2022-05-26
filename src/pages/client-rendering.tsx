@@ -86,7 +86,10 @@ const ClientRenderingPage: NextPageWithLayout<ClientRenderingPageProps> = ({
 
   return (
     <>
-      <Title>node-vibrant example ( CSR )</Title>
+      <Title>
+        node-vibrant example
+        <br /> ( CSR )
+      </Title>
       {loading
         ? "now loading ..."
         : vibrantResultList.map(

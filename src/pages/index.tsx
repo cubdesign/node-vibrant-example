@@ -209,7 +209,10 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
 
   return (
     <>
-      <Title>node-vibrant example ( Playground )</Title>
+      <Title>
+        node-vibrant example
+        <br /> ( Playground )
+      </Title>
 
       <InputBlock>
         <h2>emoji</h2>

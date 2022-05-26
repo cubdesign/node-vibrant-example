@@ -26,7 +26,10 @@ const ServerRenderingPage: NextPageWithLayout<ServerRenderingPageProps> = ({
 
   return (
     <>
-      <Title>node-vibrant example ( SSR )</Title>
+      <Title>
+        node-vibrant example
+        <br /> ( SSR )
+      </Title>
 
       {vibrantResultList.map((vibrantResult: VibrantResult, index: number) => {
         return (
