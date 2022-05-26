@@ -1,4 +1,6 @@
 import { getFileName } from "@/utils/fileUtils";
+import { mq } from "@/utils/mq";
+import styled from "@emotion/styled";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -20,6 +22,29 @@ const hasFile = (files: File[], targetFile: File): boolean => {
     return isSameFile(file, targetFile);
   });
 };
+
+const Container = styled("div")``;
+
+const DropArea = styled("p")`
+  margin: 0 0 8px 0;
+  background-color: #676767;
+  padding: 1rem 3rem;
+  display: flex;
+  align-items: center;
+  height: 100px;
+  ${mq("sm")} {
+    height: 200px;
+  }
+`;
+
+const ThumbnailArea = styled("aside")`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const Thumbnail = styled("img")`
+  max-width: 100px;
+`;
 
 const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
   defaultValue,
@@ -108,14 +133,11 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
     return files.map((file: ExtendFile) => {
       return (
         <div key={file.name}>
-          <img
+          <Thumbnail
             src={file.preview}
             // Revoke data uri after image is loaded
             onLoad={() => {
               // URL.revokeObjectURL(file.preview);
-            }}
-            style={{
-              maxWidth: "100px",
             }}
             alt={file.name}
           />
@@ -139,25 +161,15 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
   });
 
   return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      <p
-        style={{
-          backgroundColor: "#676767",
-          padding: "3rem 3rem",
-        }}
-      >
-        Drag &apos;n&lsquo; drop some files here, or click to select files
-      </p>
-      <aside
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-        }}
-      >
-        {thumbnails}
-      </aside>
-    </div>
+    <Container>
+      <div {...getRootProps()}>
+        <input {...getInputProps()} />
+        <DropArea>
+          Drag &apos;n&lsquo; drop some files here, or click to select files
+        </DropArea>
+        <ThumbnailArea>{thumbnails}</ThumbnailArea>
+      </div>
+    </Container>
   );
 };
 export default DropZoneWithPreview;

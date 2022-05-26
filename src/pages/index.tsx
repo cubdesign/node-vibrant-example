@@ -15,6 +15,7 @@ import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 import DropZoneWithPreview from "@/components/ui/DropZoneWithPreview";
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
 import styled from "@emotion/styled";
+import { mq } from "@/utils/mq";
 
 type PlaygroundPageProps = {
   origin: string;
@@ -30,18 +31,24 @@ const InputBlock = styled("div")`
   padding: 1rem;
   border: solid 3px #ffffff;
   margin-bottom: 48px;
-
   text-align: center;
   h2 {
     text-align: left;
+    padding: 0;
+    margin: 0 0 8px 0;
   }
 `;
 
 const EmojiInput = styled("input")`
-  font-size: 3rem;
-  line-height: 3rem;
-  padding: 16px;
+  font-size: 2rem;
+  line-height: 1;
+  padding: 8px;
   width: 100%;
+  margin-bottom: 8px;
+  ${mq("sm")} {
+    font-size: 3rem;
+    padding: 16px;
+  }
 `;
 
 const Button = styled("button")`
