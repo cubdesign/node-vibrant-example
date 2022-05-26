@@ -43,6 +43,33 @@ const ThumbnailArea = styled("aside")`
   flex-wrap: wrap;
 `;
 
+const ThumbnailWrapper = styled("div")`
+  position: relative;
+  top: 0;
+  left: 0;
+`;
+const DeleteIcon = styled("div")`
+  position: absolute;
+  top: -6px;
+  left: -8px;
+  z-index: 1;
+  font-size: 16px;
+  line-height: 16px;
+  height: 16px;
+  width: 16px;
+  background-color: #be0fbe;
+  border-radius: 10px;
+  &::after {
+    /* content: &times; */
+    position: absolute;
+    top: 0px;
+    left: 4px;
+    content: "✕";
+    color: #ffffff;
+    font-size: 10px;
+  }
+`;
+
 const Thumbnail = styled("img")`
   max-height: 30px;
   margin-right: 8px;
@@ -137,7 +164,8 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
   const thumbnails = useMemo(() => {
     return files.map((file: ExtendFile) => {
       return (
-        <div key={file.name}>
+        <ThumbnailWrapper key={file.name}>
+          <DeleteIcon />
           <Thumbnail
             src={file.preview}
             // Revoke data uri after image is loaded
@@ -146,7 +174,7 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
             }}
             alt={file.name}
           />
-        </div>
+        </ThumbnailWrapper>
       );
     });
   }, [files]);
