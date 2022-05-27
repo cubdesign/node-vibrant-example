@@ -1,3 +1,4 @@
+import fetch from "cross-fetch";
 import { getFileName } from "@/utils/fileUtils";
 import { mq } from "@/utils/mq";
 import styled from "@emotion/styled";
