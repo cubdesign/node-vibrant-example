@@ -24,12 +24,14 @@ const InputBlock = styled("div")`
   border: solid 3px #ffffff;
   margin-bottom: 48px;
   text-align: center;
-  h2 {
-    text-align: left;
-    padding: 0;
-    margin: 0 0 8px 0;
-  }
 `;
+
+const Label = styled("h2")`
+  text-align: left;
+  padding: 0;
+  margin: 0 0 8px 0;
+`;
+
 const InputBlockInner = styled("div")`
   position: relative;
   top: 0;
@@ -100,7 +102,9 @@ const PlaygroundInput: React.FC<PlaygroundInputProps> = ({
   const [inputEmoji, setInputEmoji] = useState<string>("");
 
   const [inputImage, setInputImage] = useState<string[]>([]);
+
   const [initInputValue, setInitInputValue] = useState<boolean>(false);
+
   const createInitialInputValue = () => {
     // TODO　強引
     if (initInputValue) {
@@ -128,8 +132,6 @@ const PlaygroundInput: React.FC<PlaygroundInputProps> = ({
     setInputEmoji(initialInputValue.inputEmoji);
     setInputImage(initialInputValue.inputImage);
   };
-
-  createInitialInputValue();
 
   const createVibrantSourceList = useCallback(() => {
     const inputEmojiList: VibrantSource[] = getEmojiListFromString(
@@ -162,7 +164,7 @@ const PlaygroundInput: React.FC<PlaygroundInputProps> = ({
   }, [inputEmoji, inputImage]);
 
   useEffect(() => {
-    createVibrantSourceList();
+    createInitialInputValue();
   }, []);
 
   const onClickButton = (
@@ -182,7 +184,7 @@ const PlaygroundInput: React.FC<PlaygroundInputProps> = ({
   return (
     <InputBlock>
       <InputBlockInner>
-        <h2>emoji</h2>
+        <Label>emoji</Label>
         <EmojiInput
           type={"text"}
           value={inputEmoji}
@@ -190,14 +192,18 @@ const PlaygroundInput: React.FC<PlaygroundInputProps> = ({
             setInputEmoji(event.target.value.trim());
           }}
         />
-        <h2>image</h2>
-        <DropZoneWithPreview
-          ref={dropZoneRef}
-          defaultValue={inputImage}
-          onChange={(images: string[]) => {
-            setInputImage(images);
-          }}
-        ></DropZoneWithPreview>
+        <Label>image</Label>
+        {initInputValue ? (
+          <DropZoneWithPreview
+            ref={dropZoneRef}
+            defaultValue={inputImage}
+            onChange={(images: string[]) => {
+              setInputImage(images);
+            }}
+          />
+        ) : (
+          ""
+        )}
         <Button type="button" onClick={onClickButton}>
           Play
         </Button>
