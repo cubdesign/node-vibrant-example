@@ -12,53 +12,13 @@ import VibrantBlock from "@/components/VibrantBlock";
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 import PlaygroundInput from "@/components/PlaygroundInput";
+import getSampleVibrantSource from "@/fixtures/sampleData";
 
 type PlaygroundPageProps = {
   origin: string;
 };
 
-const initialVibrantSourceList: VibrantSource[] = [
-  {
-    emoji: "👾",
-    type: "emoji",
-  },
-  {
-    emoji: "🎁",
-    type: "emoji",
-  },
-  {
-    emoji: "💨",
-    type: "emoji",
-  },
-  {
-    emoji: "😅",
-    type: "emoji",
-  },
-  {
-    emoji: "🙅🏻‍♂️",
-    type: "emoji",
-  },
-  {
-    file: "/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
-    type: "image",
-  },
-  {
-    file: "/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
-    type: "image",
-  },
-  {
-    file: "/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
-    type: "image",
-  },
-  {
-    file: "/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
-    type: "image",
-  },
-  {
-    file: "/images/david-clode-fT2qXggBlks-unsplash.jpg",
-    type: "image",
-  },
-];
+const initialVibrantSourceList: VibrantSource[] = getSampleVibrantSource();
 
 const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   origin,

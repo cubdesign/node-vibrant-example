@@ -3,9 +3,9 @@ import styled from "@emotion/styled";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
-import Footer from "../ui/Footer";
-import Header from "../ui/Header";
-import PageLoading from "../ui/PageLoading";
+import Footer from "@/components/ui/Footer";
+import Header from "@/components/ui/Header";
+import PageLoading from "@/components/ui/PageLoading";
 
 type DefaultLayoutProps = {
   title: string;

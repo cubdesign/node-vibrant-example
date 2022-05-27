@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Vec3 } from "node-vibrant/lib/color";
 import Color from "color";
+
 export type VibrantColorSwatchProps = {
   ratioSwatch: RatioSwatch;
 };

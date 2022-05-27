@@ -10,7 +10,6 @@ import {
   rgbInteger,
   VibrantResult,
 } from "@/lib/ColorAnalyzer";
-import { Palette } from "node-vibrant/lib/color";
 
 type VibrantBlockProps = {
   vibrantResult: VibrantResult;

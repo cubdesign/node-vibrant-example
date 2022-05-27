@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { useCallback, useEffect, useRef, useState } from "react";
 import DropZoneWithPreview, {
   DropZoneWithPreviewChildHandles,
-} from "./DropZoneWithPreview";
+} from "@/components/DropZoneWithPreview";
 
 type PlaygroundInputProps = {
   initialVibrantSourceList: VibrantSource[];

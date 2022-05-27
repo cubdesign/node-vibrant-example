@@ -15,6 +15,16 @@ const getFileName = (url: string): string => {
   return fileName;
 };
 
-export { getImageURLFromOrigin, getFileName };
-const fileUtils = { getImageURLFromOrigin, getFileName };
+const isSameFile = (a: File, b: File): boolean => {
+  return a.name === b.name && a.size === b.size && a.type === b.type;
+};
+
+const hasFile = (files: File[], targetFile: File): boolean => {
+  return files.some((file) => {
+    return isSameFile(file, targetFile);
+  });
+};
+
+export { getImageURLFromOrigin, getFileName, isSameFile, hasFile };
+const fileUtils = { getImageURLFromOrigin, getFileName, hasFile };
 export default fileUtils;

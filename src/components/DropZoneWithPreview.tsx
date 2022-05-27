@@ -1,5 +1,5 @@
 import fetch from "cross-fetch";
-import { getFileName } from "@/utils/fileUtils";
+import { getFileName, hasFile, isSameFile } from "@/utils/fileUtils";
 import { mq } from "@/utils/mq";
 import styled from "@emotion/styled";
 import {
@@ -25,15 +25,6 @@ export type DropZoneWithPreviewChildHandles = {
 type DropZoneWithPreviewProps = {
   defaultValue?: string[];
   onChange?: (images: string[]) => void;
-};
-
-const isSameFile = (a: File, b: File): boolean => {
-  return a.name === b.name && a.size === b.size && a.type === b.type;
-};
-const hasFile = (files: File[], targetFile: File): boolean => {
-  return files.some((file) => {
-    return isSameFile(file, targetFile);
-  });
 };
 
 const Container = styled("div")``;
@@ -63,6 +54,7 @@ const ThumbnailWrapper = styled("div")`
   left: 0;
   cursor: pointer;
 `;
+
 const DeleteIcon = styled("div")`
   position: absolute;
   top: -8px;
