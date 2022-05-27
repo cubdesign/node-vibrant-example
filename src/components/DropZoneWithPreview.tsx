@@ -26,13 +26,14 @@ const hasFile = (files: File[], targetFile: File): boolean => {
 const Container = styled("div")``;
 
 const DropArea = styled("p")`
-  margin: 0 0 8px 0;
+  margin: 0 0 16px 0;
   background-color: #676767;
   padding: 1rem 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100px;
+  cursor: pointer;
   ${mq("sm")} {
     height: 200px;
   }
@@ -47,10 +48,11 @@ const ThumbnailWrapper = styled("div")`
   position: relative;
   top: 0;
   left: 0;
+  cursor: pointer;
 `;
 const DeleteIcon = styled("div")`
   position: absolute;
-  top: -6px;
+  top: -8px;
   left: -8px;
   z-index: 1;
   font-size: 16px;
@@ -161,10 +163,35 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
     [files, onChange]
   );
 
+  const deleteFile = (targetFile: ExtendFile) => {
+    const newFiles: ExtendFile[] = [
+      ...files.filter((file) => !isSameFile(file, targetFile)),
+    ];
+    // ファイル削除
+    setFiles(newFiles);
+    if (onChange) {
+      onChange(
+        newFiles.map((file: ExtendFile) => {
+          return file.preview;
+        })
+      );
+    }
+  };
+
+  const onClickThumbnailButton = (
+    file: ExtendFile,
+    event: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    deleteFile(file);
+  };
+
   const thumbnails = useMemo(() => {
     return files.map((file: ExtendFile) => {
       return (
-        <ThumbnailWrapper key={file.name}>
+        <ThumbnailWrapper
+          key={file.name}
+          onClick={(event) => onClickThumbnailButton(file, event)}
+        >
           <DeleteIcon />
           <Thumbnail
             src={file.preview}
@@ -189,8 +216,8 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
     accept: {
       "image/*": [".png", ".gif", ".jpeg", ".jpg"],
     },
-    // 5MB
-    maxSize: 1024 * 1024 * 5,
+    // 100MB（ファイルアップロードしないので、ブラウザが耐えられれば大きくても問題ない）
+    maxSize: 1024 * 1024 * 100,
   });
 
   return (
@@ -200,8 +227,8 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
         <DropArea>
           Drag &apos;n&lsquo; drop some files here, or click to select files
         </DropArea>
-        <ThumbnailArea>{thumbnails}</ThumbnailArea>
       </div>
+      <ThumbnailArea>{thumbnails}</ThumbnailArea>
     </Container>
   );
 };
