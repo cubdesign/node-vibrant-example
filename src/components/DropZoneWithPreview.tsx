@@ -1,12 +1,24 @@
 import { getFileName } from "@/utils/fileUtils";
 import { mq } from "@/utils/mq";
 import styled from "@emotion/styled";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import { useDropzone } from "react-dropzone";
 
 // previewを追加
 type ExtendFile = File & {
   preview: string;
+};
+
+// 公開したいメソッドの定義
+export type DropZoneWithPreviewChildHandles = {
+  resetAll: () => void;
 };
 
 type DropZoneWithPreviewProps = {
@@ -80,12 +92,18 @@ const Thumbnail = styled("img")`
   }
 `;
 
-const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
-  defaultValue,
-  onChange,
-}) => {
+const DropZoneWithPreview: React.ForwardRefRenderFunction<
+  DropZoneWithPreviewChildHandles,
+  DropZoneWithPreviewProps
+> = ({ defaultValue, onChange }, ref) => {
   const [files, setFiles] = useState<ExtendFile[]>([]);
   const [initDefaultValue, setInitDefaultValue] = useState<boolean>(false);
+
+  useImperativeHandle(ref, () => ({
+    resetAll() {
+      setFiles([]);
+    },
+  }));
 
   useEffect(() => {
     const fetchAll = () => {
@@ -232,4 +250,4 @@ const DropZoneWithPreview: React.FC<DropZoneWithPreviewProps> = ({
     </Container>
   );
 };
-export default DropZoneWithPreview;
+export default forwardRef(DropZoneWithPreview);

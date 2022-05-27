@@ -10,9 +10,17 @@ import {
 } from "@/lib/ColorAnalyzer";
 
 import VibrantBlock from "@/components/VibrantBlock";
-import React, { ReactElement, useCallback, useEffect, useState } from "react";
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
-import DropZoneWithPreview from "@/components/DropZoneWithPreview";
+import DropZoneWithPreview, {
+  DropZoneWithPreviewChildHandles,
+} from "@/components/DropZoneWithPreview";
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
 import styled from "@emotion/styled";
 import { mq } from "@/utils/mq";
@@ -37,6 +45,11 @@ const InputBlock = styled("div")`
     padding: 0;
     margin: 0 0 8px 0;
   }
+`;
+const InputBlockInner = styled("div")`
+  position: relative;
+  top: 0;
+  left: 0;
 `;
 
 const EmojiInput = styled("input")`
@@ -71,6 +84,24 @@ const Button = styled("button")`
   }
 `;
 
+const ResetButton = styled("button")`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.4rem 1rem;
+  color: #ffffff;
+  background-color: #be0fbe;
+  border: none;
+  &:active {
+    background-color: #09dd5a;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    // タッチデバイス以外（タッチデバイスだとhoverが残り続ける）
+    &:hover {
+      background-color: #09dd5a;
+    }
+  }
+`;
 const initialVibrantSourceList: VibrantSource[] = [
   {
     emoji: "👾",
@@ -117,6 +148,8 @@ const initialVibrantSourceList: VibrantSource[] = [
 const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   origin,
 }) => {
+  const dropZoneRef = useRef<DropZoneWithPreviewChildHandles>(null);
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const [initInputValue, setInitInputValue] = useState<boolean>(false);
@@ -212,6 +245,15 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
     createVibrantSourceList();
   };
 
+  const onClickResetButton = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    setInputEmoji("");
+    setInputImage([]);
+    // TODO 汚い
+    dropZoneRef.current?.resetAll();
+  };
+
   return (
     <>
       <Title>
@@ -220,24 +262,30 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
       </Title>
 
       <InputBlock>
-        <h2>emoji</h2>
-        <EmojiInput
-          type={"text"}
-          value={inputEmoji}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setInputEmoji(event.target.value.trim());
-          }}
-        />
-        <h2>image</h2>
-        <DropZoneWithPreview
-          defaultValue={inputImage}
-          onChange={(images: string[]) => {
-            setInputImage(images);
-          }}
-        ></DropZoneWithPreview>
-        <Button type="button" onClick={onClickButton}>
-          Play
-        </Button>
+        <InputBlockInner>
+          <h2>emoji</h2>
+          <EmojiInput
+            type={"text"}
+            value={inputEmoji}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setInputEmoji(event.target.value.trim());
+            }}
+          />
+          <h2>image</h2>
+          <DropZoneWithPreview
+            ref={dropZoneRef}
+            defaultValue={inputImage}
+            onChange={(images: string[]) => {
+              setInputImage(images);
+            }}
+          ></DropZoneWithPreview>
+          <Button type="button" onClick={onClickButton}>
+            Play
+          </Button>
+          <ResetButton type="button" onClick={onClickResetButton}>
+            Reset all
+          </ResetButton>
+        </InputBlockInner>
       </InputBlock>
 
       {loading
