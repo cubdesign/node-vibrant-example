@@ -12,7 +12,7 @@ import {
 import VibrantBlock from "@/components/VibrantBlock";
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
-import DropZoneWithPreview from "@/components/ui/DropZoneWithPreview";
+import DropZoneWithPreview from "@/components/DropZoneWithPreview";
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
 import styled from "@emotion/styled";
 import { mq } from "@/utils/mq";
