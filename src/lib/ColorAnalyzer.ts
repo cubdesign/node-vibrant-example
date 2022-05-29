@@ -1,10 +1,13 @@
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
+import { getOS, isAndroid, isApple } from "@/utils/ua";
 import Vibrant from "node-vibrant";
 import { Palette, Swatch, Vec3 } from "node-vibrant/lib/color";
 import { EmojiEntity, parse } from "twemoji-parser";
 
-interface ExtendsEmojiEntity extends EmojiEntity {
+export type EmojiBrand = "apple" | "google" | "twitter";
+export interface ExtendsEmojiEntity extends EmojiEntity {
   unicode: string;
+  brand: EmojiBrand;
 }
 
 export type VibrantSourceType = "image" | "emoji";
@@ -17,6 +20,7 @@ export type VibrantSource = {
 
 export type VibrantResult = {
   imageURL: string;
+  emoji: ExtendsEmojiEntity | null;
   palette: Palette;
   source: VibrantSource;
 };
@@ -66,15 +70,38 @@ const getEmojiListFromString = (text: string): string[] => {
 };
 
 /**
+ * UserAgentから絵文字のブランドを取得する
+ *
+ * @param ua UserAgent
+ * @returns
+ */
+const getEmojiBrandByUA = (ua: string): EmojiBrand => {
+  if (isApple(ua)) {
+    return "apple";
+  }
+  if (isAndroid(ua)) {
+    return "google";
+  }
+
+  // appleデバイス、アンドロイド以外はTwitterとする
+  return "twitter";
+};
+
+/**
  * 絵文字のユニコードを取得する
  *
  * @param emoji 絵文字（複数可）
  */
-const getExtendsEmojiEntities = (emoji: string): ExtendsEmojiEntity[] => {
+const getExtendsEmojiEntities = (
+  emoji: string,
+  ua: string
+): ExtendsEmojiEntity[] => {
+  const emojiBrand: EmojiBrand = getEmojiBrandByUA(ua);
+
   const emojiEntities: EmojiEntity[] = parse(emoji, {
     buildUrl: (codepoints: string, assetType: string): string => {
       return assetType === "png"
-        ? `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/${codepoints}.png`
+        ? `https://cdn.jsdelivr.net/npm/emoji-datasource-${emojiBrand}@14.0.0/img/${emojiBrand}/64/${codepoints}.png`
         : `https://twemoji.maxcdn.com/v/latest/svg/${codepoints}.svg`;
     },
     assetType: "png",
@@ -87,6 +114,7 @@ const getExtendsEmojiEntities = (emoji: string): ExtendsEmojiEntity[] => {
 
     extendsEmojiEntities.push({
       unicode: emojiEntity.url.replace(/.*\/(.*)\.(png|svg)/, "$1"),
+      brand: emojiBrand,
       ...emojiEntity,
     });
   }
@@ -211,17 +239,22 @@ const getCSSGradientRGBList = (ratioSwatchList: RatioSwatch[]): string[] => {
 
 const getVibrantList = async (
   vibrantSourceList: VibrantSource[],
-  origin: string
+  origin: string,
+  ua: string
 ): Promise<VibrantResult[]> => {
   const vibrantResultList: VibrantResult[] = [];
 
   for (let i: number = 0; i < vibrantSourceList.length; i++) {
     const source = vibrantSourceList[i];
 
+    let extendsEmojiEntity = null;
+
+    if (source.type === "emoji") {
+      extendsEmojiEntity = getExtendsEmojiEntities(source.emoji!, ua)[0];
+    }
+
     const filePath: string =
-      source.type === "image"
-        ? source.file!
-        : getExtendsEmojiEntities(source.emoji!)[0].url;
+      source.type === "image" ? source.file! : extendsEmojiEntity!.url;
 
     const imageURL: string = getImageURLFromOrigin(filePath, origin);
 
@@ -233,6 +266,7 @@ const getVibrantList = async (
 
     const vibrantResult: VibrantResult = {
       imageURL: imageURL,
+      emoji: extendsEmojiEntity,
       palette: palette,
       source: source,
     };

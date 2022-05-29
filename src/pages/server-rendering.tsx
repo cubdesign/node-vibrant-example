@@ -60,11 +60,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const { origin } = absoluteUrl(context.req);
 
+  const ua: string = context.req.headers["user-agent"] || "";
+
   const vibrantResultList: VibrantResult[] = await getVibrantList(
     vibrantSourceList,
-    origin
+    origin,
+    ua
   );
-
+  console.log(JSON.stringify(vibrantResultList));
   const props: ServerRenderingPageProps = {
     vibrantResultListString: JSON.stringify(vibrantResultList),
   };

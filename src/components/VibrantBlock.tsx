@@ -10,6 +10,7 @@ import {
   rgbInteger,
   VibrantResult,
 } from "@/lib/ColorAnalyzer";
+import Emoji from "./Emoji";
 
 type VibrantBlockProps = {
   vibrantResult: VibrantResult;
@@ -21,9 +22,6 @@ const Image = styled("img")`
   ${mq("sm")} {
     max-height: 60vh;
   }
-`;
-const Emoji = styled("div")`
-  font-size: 12rem;
 `;
 
 // TODO これは、不要かも
@@ -109,17 +107,23 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
   const ratioSwatchList = getRatioSwatch(vibrantResult.palette);
   const topRatioSwatch: RatioSwatch = getTopRatioSwatch(ratioSwatchList);
   const cssGradientRGBList: string[] = getCSSGradientRGBList(ratioSwatchList);
+  const mainColor: string = `rgb(${rgbInteger(
+    topRatioSwatch.swatch.rgb
+  ).toString()})`;
+
   return (
-    <Container
-      key={vibrantResult.imageURL}
-      mainColor={`rgb(${rgbInteger(topRatioSwatch.swatch.rgb).toString()})`}
-    >
+    <Container key={vibrantResult.imageURL} mainColor={mainColor}>
       <ViewerBlock cssGradientRGB={cssGradientRGBList}>
         <ViewerWrapper>
           {vibrantResult.source.type === "image" ? (
             <Image src={vibrantResult.imageURL} alt="image1" />
           ) : (
-            <Emoji>{vibrantResult.source.emoji}</Emoji>
+            <Emoji
+              emoji={vibrantResult.emoji!}
+              mainColor={mainColor}
+              size={12}
+              debug={false}
+            />
           )}
         </ViewerWrapper>
       </ViewerBlock>

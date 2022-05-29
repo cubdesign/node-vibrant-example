@@ -31,9 +31,11 @@ const ClientRenderingPage: NextPageWithLayout<ClientRenderingPageProps> = ({
 
   useEffect(() => {
     const load = async () => {
+      const ua: string = window.navigator.userAgent;
       const vibrantResultList: VibrantResult[] = await getVibrantList(
         vibrantSourceList,
-        origin
+        origin,
+        ua
       );
       setLoading(false);
       setVibrantResultList(vibrantResultList);

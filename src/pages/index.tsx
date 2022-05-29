@@ -34,9 +34,11 @@ const PlaygroundPage: NextPageWithLayout<PlaygroundPageProps> = ({
   );
 
   const load = useCallback(async () => {
+    const ua: string = window.navigator.userAgent;
     const vibrantResultList: VibrantResult[] = await getVibrantList(
       vibrantSourceList,
-      origin
+      origin,
+      ua
     );
     setLoading(false);
     setVibrantResultList(vibrantResultList);
