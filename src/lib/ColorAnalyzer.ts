@@ -95,7 +95,7 @@ const getEmojiBrandByUA = (ua: string): EmojiBrand => {
  *
  * @param emoji 絵文字（複数可）
  */
-const getExtendsEmojiEntities = (emoji: string, ua: string): EmojiItem[] => {
+const getEmojiItems = (emoji: string, ua: string): EmojiItem[] => {
   const emojiBrand: EmojiBrand = getEmojiBrandByUA(ua);
 
   const emojiEntities: EmojiEntity[] = parse(emoji, {
@@ -248,14 +248,14 @@ const getVibrantList = async (
   for (let i: number = 0; i < vibrantSourceList.length; i++) {
     const source = vibrantSourceList[i];
 
-    let extendsEmojiEntity = null;
+    let emojiItem = null;
 
     if (source.type === "emoji") {
-      extendsEmojiEntity = getExtendsEmojiEntities(source.emoji!, ua)[0];
+      emojiItem = getEmojiItems(source.emoji!, ua)[0];
     }
 
     const filePath: string =
-      source.type === "image" ? source.file! : extendsEmojiEntity!.imageUrl;
+      source.type === "image" ? source.file! : emojiItem!.imageUrl;
 
     const imageURL: string = getImageURLFromOrigin(filePath, origin);
 
@@ -267,7 +267,7 @@ const getVibrantList = async (
 
     const vibrantResult: VibrantResult = {
       imageURL: imageURL,
-      emoji: extendsEmojiEntity,
+      emoji: emojiItem,
       palette: palette,
       source: source,
     };
