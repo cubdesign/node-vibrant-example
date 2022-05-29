@@ -1,10 +1,10 @@
-import { ExtendsEmojiEntity } from "@/lib/ColorAnalyzer";
+import { EmojiItem } from "@/lib/ColorAnalyzer";
 import styled from "@emotion/styled";
 import { ReactNode } from "react";
 import Color from "color";
 
 type EmojiProps = {
-  emoji: ExtendsEmojiEntity;
+  emoji: EmojiItem;
   mainColor: string;
   size?: number;
   debug?: boolean;
@@ -78,7 +78,7 @@ const Emoji: React.FC<EmojiProps> = ({
   debug = false,
 }) => {
   const getView = (
-    emoji: ExtendsEmojiEntity,
+    emoji: EmojiItem,
     mainColor: string,
     debug: boolean
   ): ReactNode => {

@@ -1,14 +1,17 @@
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
-import { getOS, isAndroid, isApple } from "@/utils/ua";
+import { isAndroid, isApple } from "@/utils/ua";
 import Vibrant from "node-vibrant";
 import { Palette, Swatch, Vec3 } from "node-vibrant/lib/color";
 import { EmojiEntity, parse } from "twemoji-parser";
 
 export type EmojiBrand = "apple" | "google" | "twitter";
-export interface ExtendsEmojiEntity extends EmojiEntity {
+
+export type EmojiItem = {
+  text: string;
   unicode: string;
   brand: EmojiBrand;
-}
+  imageUrl: string;
+};
 
 export type VibrantSourceType = "image" | "emoji";
 
@@ -20,7 +23,7 @@ export type VibrantSource = {
 
 export type VibrantResult = {
   imageURL: string;
-  emoji: ExtendsEmojiEntity | null;
+  emoji: EmojiItem | null;
   palette: Palette;
   source: VibrantSource;
 };
@@ -92,10 +95,7 @@ const getEmojiBrandByUA = (ua: string): EmojiBrand => {
  *
  * @param emoji 絵文字（複数可）
  */
-const getExtendsEmojiEntities = (
-  emoji: string,
-  ua: string
-): ExtendsEmojiEntity[] => {
+const getExtendsEmojiEntities = (emoji: string, ua: string): EmojiItem[] => {
   const emojiBrand: EmojiBrand = getEmojiBrandByUA(ua);
 
   const emojiEntities: EmojiEntity[] = parse(emoji, {
@@ -107,19 +107,20 @@ const getExtendsEmojiEntities = (
     assetType: "png",
   });
 
-  const extendsEmojiEntities: ExtendsEmojiEntity[] = [];
+  const emojiItems: EmojiItem[] = [];
 
   for (let i: number = 0; i < emojiEntities.length; i++) {
     const emojiEntity: EmojiEntity = emojiEntities[i];
 
-    extendsEmojiEntities.push({
+    emojiItems.push({
+      text: emojiEntity.text,
       unicode: emojiEntity.url.replace(/.*\/(.*)\.(png|svg)/, "$1"),
       brand: emojiBrand,
-      ...emojiEntity,
+      imageUrl: emojiEntity.url,
     });
   }
 
-  return extendsEmojiEntities;
+  return emojiItems;
 };
 
 const getRatioSwatch = (palette: Palette): RatioSwatch[] => {
@@ -254,7 +255,7 @@ const getVibrantList = async (
     }
 
     const filePath: string =
-      source.type === "image" ? source.file! : extendsEmojiEntity!.url;
+      source.type === "image" ? source.file! : extendsEmojiEntity!.imageUrl;
 
     const imageURL: string = getImageURLFromOrigin(filePath, origin);
 

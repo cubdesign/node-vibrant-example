@@ -8,12 +8,11 @@ describe("ServerRenderingPage", () => {
         imageURL:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f47e.png",
         emoji: {
+          text: "👾",
           unicode: "1f47e",
           brand: "apple",
-          url: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f47e.png",
-          indices: [0, 2],
-          text: "👾",
-          type: "emoji",
+          imageUrl:
+            "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f47e.png",
         },
         palette: {
           Vibrant: { rgb: [140, 106, 186], population: 197 },
@@ -32,12 +31,11 @@ describe("ServerRenderingPage", () => {
         imageURL:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f381.png",
         emoji: {
+          text: "🎁",
           unicode: "1f381",
           brand: "apple",
-          url: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f381.png",
-          indices: [0, 2],
-          text: "🎁",
-          type: "emoji",
+          imageUrl:
+            "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f381.png",
         },
         palette: {
           Vibrant: { rgb: [230, 165, 28], population: 392 },
@@ -62,12 +60,11 @@ describe("ServerRenderingPage", () => {
         imageURL:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png",
         emoji: {
+          text: "💨",
           unicode: "1f4a8",
           brand: "apple",
-          url: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png",
-          indices: [0, 2],
-          text: "💨",
-          type: "emoji",
+          imageUrl:
+            "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png",
         },
         palette: {
           Vibrant: {
@@ -92,12 +89,11 @@ describe("ServerRenderingPage", () => {
         imageURL:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png",
         emoji: {
+          text: "😅",
           unicode: "1f605",
           brand: "apple",
-          url: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png",
-          indices: [0, 2],
-          text: "😅",
-          type: "emoji",
+          imageUrl:
+            "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png",
         },
         palette: {
           Vibrant: { rgb: [240, 160, 18], population: 152 },
@@ -113,12 +109,11 @@ describe("ServerRenderingPage", () => {
         imageURL:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png",
         emoji: {
+          text: "🙅🏻‍♂️",
           unicode: "1f645-1f3fb-200d-2642-fe0f",
           brand: "apple",
-          url: "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png",
-          indices: [0, 7],
-          text: "🙅🏻‍♂️",
-          type: "emoji",
+          imageUrl:
+            "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png",
         },
         palette: {
           Vibrant: { rgb: [72, 138, 202], population: 269 },
