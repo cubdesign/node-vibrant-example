@@ -1,4 +1,4 @@
-import { getEmojiListFromString, VibrantSource } from "@/lib/ColorAnalyzer";
+import { VibrantSource } from "@/lib/ColorAnalyzer";
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
 import { mq } from "@/utils/mq";
 import styled from "@emotion/styled";
@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import DropZoneWithPreview, {
   DropZoneWithPreviewChildHandles,
 } from "@/components/DropZoneWithPreview";
+import { getEmojiListFromString } from "@/lib/EmojiParser";
 
 type PlaygroundInputProps = {
   initialVibrantSourceList: VibrantSource[];
