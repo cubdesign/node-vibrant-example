@@ -1,7 +1,6 @@
 import { ratioInteger, RatioSwatch, rgbInteger } from "@/lib/ColorAnalyzer";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Vec3 } from "node-vibrant/lib/color";
 import Color from "color";
 
 export type VibrantColorSwatchProps = {
@@ -91,7 +90,7 @@ const VibrantColorSwatch: React.FC<VibrantColorSwatchProps> = ({
   const { label, ratio } = ratioSwatch;
 
   // 少数点が多すぎるとテキストが切れるので、数値を切り捨て
-  const shortRgb: Vec3 = rgbInteger(rgb);
+  const shortRgb: number[] = rgbInteger(rgb);
 
   return (
     <Component rgb={shortRgb}>

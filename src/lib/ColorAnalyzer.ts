@@ -1,5 +1,4 @@
 import { getImageURLFromOrigin } from "@/utils/fileUtils";
-import { isAndroid, isApple } from "@/utils/ua";
 import Vibrant from "node-vibrant";
 import { Palette, Swatch, Vec3 } from "node-vibrant/lib/color";
 import { Emoji, getEmojis } from "./EmojiParser";
@@ -15,8 +14,23 @@ export type VibrantSource = {
 export type VibrantResult = {
   preview: string;
   emoji: Emoji | null;
-  palette: Palette;
+  palette: ColorPalette;
   source: VibrantSource;
+};
+
+export type ColorPalette = {
+  Vibrant?: ColorSwatch;
+  Muted?: ColorSwatch;
+  DarkVibrant?: ColorSwatch;
+  DarkMuted?: ColorSwatch;
+  LightVibrant?: ColorSwatch;
+  LightMuted?: ColorSwatch;
+};
+
+export type ColorSwatch = {
+  rgb: number[];
+  hex: string;
+  population: number;
 };
 
 export type SwatchLabel =
@@ -29,8 +43,7 @@ export type SwatchLabel =
 
 export type RatioSwatch = {
   label: SwatchLabel;
-  // TODO SwatchはClassだった。なので、↓はインスタンスが入る
-  swatch: Swatch;
+  swatch: ColorSwatch;
   ratio: number;
 };
 
@@ -39,10 +52,10 @@ export type RatioSwatch = {
  *
  * TODO 表示する場合、ここを通さないと色が表記と変わる。整数にしているので、色が変わるかもしれない
  */
-const rgbInteger = (rgb: Vec3): Vec3 => {
+const rgbInteger = (rgb: number[]): number[] => {
   return rgb.map((n: number): number => {
     return Math.floor(n);
-  }) as Vec3;
+  });
 };
 
 /**
@@ -52,7 +65,7 @@ const ratioInteger = (ratio: number): number => {
   return Math.floor(ratio);
 };
 
-const getRatioSwatch = (palette: Palette): RatioSwatch[] => {
+const getRatioSwatch = (palette: ColorPalette): RatioSwatch[] => {
   const ratioSwatchList: RatioSwatch[] = [];
   if (palette.Vibrant) {
     ratioSwatchList.push({
@@ -166,6 +179,38 @@ const getCSSGradientRGBList = (ratioSwatchList: RatioSwatch[]): string[] => {
 
   return cssRGBList;
 };
+const convertVec3ToNumberArray = (vec3: Vec3): number[] => {
+  return [vec3[0], vec3[1], vec3[2]];
+};
+const convertSwatchToColorSwatch = (swatch: Swatch): ColorSwatch => {
+  return {
+    rgb: convertVec3ToNumberArray(swatch.rgb),
+    hex: swatch.hex,
+    population: swatch.population,
+  };
+};
+const convertPaletteToColorPalette = (palette: Palette): ColorPalette => {
+  return {
+    Vibrant: palette.Vibrant
+      ? convertSwatchToColorSwatch(palette.Vibrant)
+      : undefined,
+    Muted: palette.Muted
+      ? convertSwatchToColorSwatch(palette.Muted)
+      : undefined,
+    DarkVibrant: palette.DarkVibrant
+      ? convertSwatchToColorSwatch(palette.DarkVibrant)
+      : undefined,
+    DarkMuted: palette.DarkMuted
+      ? convertSwatchToColorSwatch(palette.DarkMuted)
+      : undefined,
+    LightVibrant: palette.LightVibrant
+      ? convertSwatchToColorSwatch(palette.LightVibrant)
+      : undefined,
+    LightMuted: palette.LightMuted
+      ? convertSwatchToColorSwatch(palette.LightMuted)
+      : undefined,
+  };
+};
 
 const getVibrantList = async (
   vibrantSourceList: VibrantSource[],
@@ -197,12 +242,13 @@ const getVibrantList = async (
     const vibrantResult: VibrantResult = {
       preview: imageURL,
       emoji: emoji,
-      palette: palette,
+      palette: convertPaletteToColorPalette(palette),
       source: source,
     };
 
     vibrantResultList.push(vibrantResult);
   }
+
   return vibrantResultList;
 };
 
