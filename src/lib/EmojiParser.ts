@@ -27,6 +27,15 @@ const getEmojiBrandByUA = (ua: string): EmojiBrand => {
   // appleデバイス、アンドロイド以外はTwitterとする
   return "twitter";
 };
+/**
+ * 絵文字の画像URLからunicodeテキストを取得する
+ *
+ * @param emojiImageURL 絵文字の画像URL
+ * @returns
+ */
+const getUnicodeFromEmojiImageURL = (emojiImageURL: string): string => {
+  return emojiImageURL.replace(/.*\/(.*)\.(png|svg)/, "$1");
+};
 
 /**
  * 絵文字のユニコードを取得する
@@ -52,7 +61,7 @@ const getEmojiItems = (emoji: string, ua: string): EmojiItem[] => {
 
     emojiItems.push({
       text: emojiEntity.text,
-      unicode: emojiEntity.url.replace(/.*\/(.*)\.(png|svg)/, "$1"),
+      unicode: getUnicodeFromEmojiImageURL(emojiEntity.url),
       brand: emojiBrand,
       imageUrl: emojiEntity.url,
     });
@@ -72,10 +81,16 @@ const getEmojiListFromString = (text: string): string[] => {
   return emojiEntities.map((emoji) => emoji.text);
 };
 
-export { getEmojiBrandByUA, getEmojiItems, getEmojiListFromString };
+export {
+  getEmojiBrandByUA,
+  getUnicodeFromEmojiImageURL,
+  getEmojiItems,
+  getEmojiListFromString,
+};
 
 const EmojiParser = {
   getEmojiBrandByUA,
+  getUnicodeFromEmojiImageURL,
   getEmojiItems,
   getEmojiListFromString,
 };

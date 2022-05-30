@@ -1,4 +1,7 @@
-import { getEmojiBrandByUA } from "@/lib/EmojiParser";
+import {
+  getEmojiBrandByUA,
+  getUnicodeFromEmojiImageURL,
+} from "@/lib/EmojiParser";
 
 const UA = {
   MacBook_12_Chrome:
@@ -34,5 +37,23 @@ describe("getEmojiBrandByUA", () => {
   it("Windowsはtwitter", () => {
     expect(getEmojiBrandByUA(UA.Windows10_Edge)).toBe("twitter");
     expect(getEmojiBrandByUA(UA.Windows11_Edge)).toBe("twitter");
+  });
+});
+
+describe("getUnicodeFromEmojiImageURL", () => {
+  it("emojiのURLからunicodeテキストを取得できる", () => {
+    // 👾
+    const imageUrl1 =
+      "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f47e.png";
+
+    expect(getUnicodeFromEmojiImageURL(imageUrl1)).toBe("1f47e");
+
+    // 🙅🏻‍♂️
+    const imageUrl2 =
+      "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png";
+
+    expect(getUnicodeFromEmojiImageURL(imageUrl2)).toBe(
+      "1f645-1f3fb-200d-2642-fe0f"
+    );
   });
 });
