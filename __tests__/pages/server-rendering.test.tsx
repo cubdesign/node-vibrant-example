@@ -5,7 +5,7 @@ describe("ServerRenderingPage", () => {
   it("renders a heading", () => {
     const vibrantResultList: object = [
       {
-        imageURL:
+        preview:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f47e.png",
         emoji: {
           text: "👾",
@@ -28,7 +28,7 @@ describe("ServerRenderingPage", () => {
         source: { emoji: "👾", type: "emoji" },
       },
       {
-        imageURL:
+        preview:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f381.png",
         emoji: {
           text: "🎁",
@@ -57,7 +57,7 @@ describe("ServerRenderingPage", () => {
         source: { emoji: "🎁", type: "emoji" },
       },
       {
-        imageURL:
+        preview:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f4a8.png",
         emoji: {
           text: "💨",
@@ -86,7 +86,7 @@ describe("ServerRenderingPage", () => {
         source: { emoji: "💨", type: "emoji" },
       },
       {
-        imageURL:
+        preview:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f605.png",
         emoji: {
           text: "😅",
@@ -106,7 +106,7 @@ describe("ServerRenderingPage", () => {
         source: { emoji: "😅", type: "emoji" },
       },
       {
-        imageURL:
+        preview:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f645-1f3fb-200d-2642-fe0f.png",
         emoji: {
           text: "🙅🏻‍♂️",
@@ -126,7 +126,7 @@ describe("ServerRenderingPage", () => {
         source: { emoji: "🙅🏻‍♂️", type: "emoji" },
       },
       {
-        imageURL:
+        preview:
           "http://localhost:3000/images/elza-kurbanova-f8MLY_HKwqQ-unsplash.jpg",
         emoji: null,
         palette: {
@@ -143,7 +143,7 @@ describe("ServerRenderingPage", () => {
         },
       },
       {
-        imageURL:
+        preview:
           "http://localhost:3000/images/erik-mclean-9y1cTVKe1IY-unsplash.jpg",
         emoji: null,
         palette: {
@@ -160,7 +160,7 @@ describe("ServerRenderingPage", () => {
         },
       },
       {
-        imageURL:
+        preview:
           "http://localhost:3000/images/max-zhang-gkdyrA_eOo8-unsplash.jpg",
         emoji: null,
         palette: {
@@ -180,7 +180,7 @@ describe("ServerRenderingPage", () => {
         },
       },
       {
-        imageURL:
+        preview:
           "http://localhost:3000/images/zhang_d-cCatH3q6o9M-unsplash.jpg",
         emoji: null,
         palette: {
@@ -197,7 +197,7 @@ describe("ServerRenderingPage", () => {
         },
       },
       {
-        imageURL:
+        preview:
           "http://localhost:3000/images/david-clode-fT2qXggBlks-unsplash.jpg",
         emoji: null,
         palette: {

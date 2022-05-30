@@ -2,7 +2,7 @@ import { getImageURLFromOrigin } from "@/utils/fileUtils";
 import { isAndroid, isApple } from "@/utils/ua";
 import Vibrant from "node-vibrant";
 import { Palette, Swatch, Vec3 } from "node-vibrant/lib/color";
-import { EmojiItem, getEmojiItems } from "./EmojiParser";
+import { Emoji, getEmojis } from "./EmojiParser";
 
 export type VibrantSourceType = "image" | "emoji";
 
@@ -13,8 +13,8 @@ export type VibrantSource = {
 };
 
 export type VibrantResult = {
-  imageURL: string;
-  emoji: EmojiItem | null;
+  preview: string;
+  emoji: Emoji | null;
   palette: Palette;
   source: VibrantSource;
 };
@@ -177,14 +177,14 @@ const getVibrantList = async (
   for (let i: number = 0; i < vibrantSourceList.length; i++) {
     const source = vibrantSourceList[i];
 
-    let emojiItem = null;
+    let emoji = null;
 
     if (source.type === "emoji") {
-      emojiItem = getEmojiItems(source.emoji!, ua)[0];
+      emoji = getEmojis(source.emoji!, ua)[0];
     }
 
     const filePath: string =
-      source.type === "image" ? source.file! : emojiItem!.imageUrl;
+      source.type === "image" ? source.file! : emoji!.imageUrl;
 
     const imageURL: string = getImageURLFromOrigin(filePath, origin);
 
@@ -195,8 +195,8 @@ const getVibrantList = async (
     const palette = await Vibrant.from(imageURL).quality(quality).getPalette();
 
     const vibrantResult: VibrantResult = {
-      imageURL: imageURL,
-      emoji: emojiItem,
+      preview: imageURL,
+      emoji: emoji,
       palette: palette,
       source: source,
     };

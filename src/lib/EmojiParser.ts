@@ -3,7 +3,7 @@ import { EmojiEntity, parse } from "twemoji-parser";
 
 export type EmojiBrand = "apple" | "google" | "twitter";
 
-export type EmojiItem = {
+export type Emoji = {
   text: string;
   unicode: string;
   brand: EmojiBrand;
@@ -42,7 +42,7 @@ const getUnicodeFromEmojiImageURL = (emojiImageURL: string): string => {
  *
  * @param emoji 絵文字（複数可）
  */
-const getEmojiItems = (emoji: string, ua: string): EmojiItem[] => {
+const getEmojis = (emoji: string, ua: string): Emoji[] => {
   const emojiBrand: EmojiBrand = getEmojiBrandByUA(ua);
 
   const emojiEntities: EmojiEntity[] = parse(emoji, {
@@ -54,12 +54,12 @@ const getEmojiItems = (emoji: string, ua: string): EmojiItem[] => {
     assetType: "png",
   });
 
-  const emojiItems: EmojiItem[] = [];
+  const emojis: Emoji[] = [];
 
   for (let i: number = 0; i < emojiEntities.length; i++) {
     const emojiEntity: EmojiEntity = emojiEntities[i];
 
-    emojiItems.push({
+    emojis.push({
       text: emojiEntity.text,
       unicode: getUnicodeFromEmojiImageURL(emojiEntity.url),
       brand: emojiBrand,
@@ -67,7 +67,7 @@ const getEmojiItems = (emoji: string, ua: string): EmojiItem[] => {
     });
   }
 
-  return emojiItems;
+  return emojis;
 };
 
 /**
@@ -84,14 +84,14 @@ const getEmojiListFromString = (text: string): string[] => {
 export {
   getEmojiBrandByUA,
   getUnicodeFromEmojiImageURL,
-  getEmojiItems,
+  getEmojis,
   getEmojiListFromString,
 };
 
 const EmojiParser = {
   getEmojiBrandByUA,
   getUnicodeFromEmojiImageURL,
-  getEmojiItems,
+  getEmojis,
   getEmojiListFromString,
 };
 

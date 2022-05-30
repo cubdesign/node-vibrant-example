@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     origin,
     ua
   );
-  console.log(JSON.stringify(vibrantResultList));
+  // console.log(JSON.stringify(vibrantResultList));
   const props: ServerRenderingPageProps = {
     vibrantResultListString: JSON.stringify(vibrantResultList),
   };

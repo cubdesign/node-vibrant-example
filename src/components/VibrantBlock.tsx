@@ -10,7 +10,7 @@ import {
   rgbInteger,
   VibrantResult,
 } from "@/lib/ColorAnalyzer";
-import Emoji from "./Emoji";
+import EmojiView from "./EmojiView";
 
 type VibrantBlockProps = {
   vibrantResult: VibrantResult;
@@ -112,13 +112,13 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
   ).toString()})`;
 
   return (
-    <Container key={vibrantResult.imageURL} mainColor={mainColor}>
+    <Container key={vibrantResult.preview} mainColor={mainColor}>
       <ViewerBlock cssGradientRGB={cssGradientRGBList}>
         <ViewerWrapper>
           {vibrantResult.source.type === "image" ? (
-            <Image src={vibrantResult.imageURL} alt="image1" />
+            <Image src={vibrantResult.preview} alt="image1" />
           ) : (
-            <Emoji
+            <EmojiView
               emoji={vibrantResult.emoji!}
               mainColor={mainColor}
               size={12}

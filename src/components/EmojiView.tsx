@@ -1,10 +1,10 @@
-import { EmojiItem } from "@/lib/ColorAnalyzer";
 import styled from "@emotion/styled";
 import { ReactNode } from "react";
 import Color from "color";
+import { Emoji } from "@/lib/EmojiParser";
 
-type EmojiProps = {
-  emoji: EmojiItem;
+type EmojiViewProps = {
+  emoji: Emoji;
   mainColor: string;
   size?: number;
   debug?: boolean;
@@ -71,14 +71,14 @@ const SVGEmoji = styled("div")(
     `
 );
 
-const Emoji: React.FC<EmojiProps> = ({
+const EmojiView: React.FC<EmojiViewProps> = ({
   emoji,
   mainColor,
   size = 1,
   debug = false,
 }) => {
   const getView = (
-    emoji: EmojiItem,
+    emoji: Emoji,
     mainColor: string,
     debug: boolean
   ): ReactNode => {
@@ -114,4 +114,4 @@ const Emoji: React.FC<EmojiProps> = ({
   return <>{view}</>;
 };
 
-export default Emoji;
+export default EmojiView;
