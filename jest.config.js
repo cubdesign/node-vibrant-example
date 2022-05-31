@@ -23,6 +23,7 @@ const customJestConfig = {
   testEnvironment: "jest-environment-jsdom",
   // Optional: Extend Jest with custom matchers
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  testPathIgnorePatterns: ["/node_modules/", "<rootDir>/__tests__/testData/*"],
 };
 
 // createJestConfigを定義することによって、本ファイルで定義された設定がNext.jsの設定に反映されます
