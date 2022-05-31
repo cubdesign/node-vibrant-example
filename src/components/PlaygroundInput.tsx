@@ -7,6 +7,7 @@ import DropZoneWithPreview, {
   DropZoneWithPreviewChildHandles,
 } from "@/components/DropZoneWithPreview";
 import { getEmojiListFromString } from "@/lib/EmojiParser";
+import EmojiInput from "./EmojiInput";
 
 type PlaygroundInputProps = {
   initialVibrantSourceList: VibrantSource[];
@@ -37,18 +38,6 @@ const InputBlockInner = styled("div")`
   position: relative;
   top: 0;
   left: 0;
-`;
-
-const EmojiInput = styled("input")`
-  font-size: 2rem;
-  line-height: 1;
-  padding: 8px;
-  width: 100%;
-  margin-bottom: 8px;
-  ${mq("sm")} {
-    font-size: 3rem;
-    padding: 16px;
-  }
 `;
 
 const Button = styled("button")`
@@ -182,25 +171,26 @@ const PlaygroundInput: React.FC<PlaygroundInputProps> = ({
     // TODO 汚い
     dropZoneRef.current?.resetAll();
   };
+
+  const onChangeEmojiInput = (text: string) => {
+    setInputEmoji(text);
+  };
+
+  const onChangeDropZoneInput = (images: string[]) => {
+    setInputImage(images);
+  };
+
   return (
     <InputBlock>
       <InputBlockInner>
         <Label>emoji</Label>
-        <EmojiInput
-          type={"text"}
-          value={inputEmoji}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setInputEmoji(event.target.value.trim());
-          }}
-        />
+        <EmojiInput value={inputEmoji} onChange={onChangeEmojiInput} />
         <Label>image</Label>
         {initInputValue ? (
           <DropZoneWithPreview
             ref={dropZoneRef}
             defaultValue={inputImage}
-            onChange={(images: string[]) => {
-              setInputImage(images);
-            }}
+            onChange={onChangeDropZoneInput}
           />
         ) : (
           ""
