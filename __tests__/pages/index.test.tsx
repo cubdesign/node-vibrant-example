@@ -9,11 +9,9 @@ describe("PlaygroundPage", () => {
     expect(screen.getByText(/Playground/)).toBeInTheDocument();
   });
 
-  test.skip("結果表示できる", async () => {
+  test("結果表示できる", async () => {
     render(<PlaygroundPage origin={origin} />);
-    // ↓ ここで落ちる
-    const Muted = await waitFor(() => screen.findByText(/Muted/));
+    await waitFor(() => screen.getAllByText(/Muted/), { timeout: 1000 * 10 });
     screen.debug();
-    expect(Muted).toBeInTheDocument();
   });
 });
