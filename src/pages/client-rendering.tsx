@@ -17,12 +17,9 @@ import getSampleVibrantSource from "@/fixtures/sampleData";
 type ClientRenderingPageProps = {
   origin: string;
 };
-
 const ClientRenderingPage: NextPageWithLayout<ClientRenderingPageProps> = ({
   origin,
 }) => {
-  const vibrantSourceList: VibrantSource[] = getSampleVibrantSource();
-
   const [loading, setLoading] = useState<boolean>(true);
 
   const [vibrantResultList, setVibrantResultList] = useState<VibrantResult[]>(
@@ -33,7 +30,7 @@ const ClientRenderingPage: NextPageWithLayout<ClientRenderingPageProps> = ({
     const load = async () => {
       const ua: string = window.navigator.userAgent;
       const vibrantResultList: VibrantResult[] = await getVibrantList(
-        vibrantSourceList,
+        getSampleVibrantSource(),
         origin,
         ua
       );
@@ -42,7 +39,7 @@ const ClientRenderingPage: NextPageWithLayout<ClientRenderingPageProps> = ({
     };
 
     load();
-  }, []);
+  }, [origin]);
 
   return (
     <>
