@@ -85,6 +85,29 @@ const Thumbnail = styled("img")`
   }
 `;
 
+/**
+ * URL.createObjectURL
+ *
+ * テストの時の際にテストが落ちないように。
+ */
+const createObjectURL = (obj: Blob | MediaSource, alt: string = ""): string => {
+  if (URL.createObjectURL) {
+    return URL.createObjectURL(obj);
+  }
+  return alt;
+};
+
+/**
+ * URL.revokeObjectURL
+ *
+ *  テストの時の際にテストが落ちないように。
+ */
+const revokeObjectURL = (url: string): void => {
+  if (URL.revokeObjectURL) {
+    URL.revokeObjectURL(url);
+  }
+};
+
 const DropZoneWithPreview: React.ForwardRefRenderFunction<
   DropZoneWithPreviewChildHandles,
   DropZoneWithPreviewProps
@@ -114,7 +137,7 @@ const DropZoneWithPreview: React.ForwardRefRenderFunction<
             .then(
               (file): ExtendFile =>
                 Object.assign(file, {
-                  preview: URL.createObjectURL(file),
+                  preview: createObjectURL(file, url),
                 })
             );
         })
@@ -149,7 +172,8 @@ const DropZoneWithPreview: React.ForwardRefRenderFunction<
       for (let i: number = 0; i < acceptedFiles.length; i++) {
         const acceptedFile: File = acceptedFiles[i];
         const loadFile: ExtendFile = Object.assign(acceptedFile, {
-          preview: URL.createObjectURL(acceptedFile),
+          // TODO URL.createObjectURLが無い場合の処理を書く
+          preview: createObjectURL(acceptedFile, ""),
         });
 
         if (!hasFile(files, loadFile)) {
@@ -157,7 +181,7 @@ const DropZoneWithPreview: React.ForwardRefRenderFunction<
           loadFiles.push(loadFile);
         } else {
           // 同じファイル
-          URL.revokeObjectURL(loadFile.preview);
+          revokeObjectURL(loadFile.preview);
         }
       }
       // TODO ごちゃごちゃしてる
@@ -219,7 +243,7 @@ const DropZoneWithPreview: React.ForwardRefRenderFunction<
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
+    return () => files.forEach((file) => revokeObjectURL(file.preview));
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
