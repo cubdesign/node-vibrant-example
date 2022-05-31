@@ -1,9 +1,79 @@
 import {
+  ColorPalette,
+  getRatioSwatch,
   getVibrantList,
+  RatioSwatch,
   VibrantResult,
   VibrantSource,
 } from "@/lib/ColorAnalyzer";
 import { UA } from "__tests__/testData/ua";
+
+describe("getRatioSwatch", () => {
+  test("SourceからResultが正しく返る", () => {
+    const source: ColorPalette = {
+      Vibrant: { rgb: [140, 106, 186], hex: "#8c6aba", population: 197 },
+      Muted: { rgb: [124, 92, 172], hex: "#7c5cac", population: 207 },
+      DarkVibrant: {
+        rgb: [62.65045871559632, 41.9697247706422, 90.6302752293578],
+        hex: "#3e295a",
+        population: 0,
+      },
+      DarkMuted: { rgb: [71, 61, 77], hex: "#473d4d", population: 86 },
+      LightVibrant: {
+        rgb: [157, 122, 205],
+        hex: "#9d7acd",
+        population: 43,
+      },
+      LightMuted: { rgb: [146, 116, 190], hex: "#9274be", population: 163 },
+    };
+
+    const result: RatioSwatch[] = [
+      {
+        hex: "#8c6aba",
+        label: "Vibrant",
+        population: 197,
+        ratio: 28.304597701149426,
+        rgb: [140, 106, 186],
+      },
+      {
+        hex: "#7c5cac",
+        label: "Muted",
+        population: 207,
+        ratio: 29.74137931034483,
+        rgb: [124, 92, 172],
+      },
+      {
+        hex: "#3e295a",
+        label: "DarkVibrant",
+        population: 0,
+        ratio: 0,
+        rgb: [62.65045871559632, 41.9697247706422, 90.6302752293578],
+      },
+      {
+        hex: "#473d4d",
+        label: "DarkMuted",
+        population: 86,
+        ratio: 12.35632183908046,
+        rgb: [71, 61, 77],
+      },
+      {
+        hex: "#9d7acd",
+        label: "LightVibrant",
+        population: 43,
+        ratio: 6.17816091954023,
+        rgb: [157, 122, 205],
+      },
+      {
+        hex: "#9274be",
+        label: "LightMuted",
+        population: 163,
+        ratio: 23.419540229885058,
+        rgb: [146, 116, 190],
+      },
+    ];
+    expect(getRatioSwatch(source)).toEqual(result);
+  });
+});
 
 describe("getVibrantList", () => {
   const origin: string = "http://localhost:3000";

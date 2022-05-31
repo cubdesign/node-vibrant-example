@@ -86,8 +86,7 @@ const Ratio = styled("span")`
 const VibrantColorSwatch: React.FC<VibrantColorSwatchProps> = ({
   ratioSwatch,
 }) => {
-  const { rgb, population } = ratioSwatch.swatch;
-  const { label, ratio } = ratioSwatch;
+  const { label, ratio, rgb, population } = ratioSwatch;
 
   // 少数点が多すぎるとテキストが切れるので、数値を切り捨て
   const shortRgb: number[] = rgbInteger(rgb);

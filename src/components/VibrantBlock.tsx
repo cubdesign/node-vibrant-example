@@ -107,9 +107,7 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
   const ratioSwatchList = getRatioSwatch(vibrantResult.palette);
   const topRatioSwatch: RatioSwatch = getTopRatioSwatch(ratioSwatchList);
   const cssGradientRGBList: string[] = getCSSGradientRGBList(ratioSwatchList);
-  const mainColor: string = `rgb(${rgbInteger(
-    topRatioSwatch.swatch.rgb
-  ).toString()})`;
+  const mainColor: string = `rgb(${rgbInteger(topRatioSwatch.rgb).toString()})`;
 
   return (
     <Container key={vibrantResult.preview} mainColor={mainColor}>

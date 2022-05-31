@@ -27,12 +27,6 @@ export type ColorPalette = {
   LightMuted?: ColorSwatch;
 };
 
-export type ColorSwatch = {
-  rgb: number[];
-  hex: string;
-  population: number;
-};
-
 export type SwatchLabel =
   | "Vibrant"
   | "Muted"
@@ -41,9 +35,14 @@ export type SwatchLabel =
   | "LightVibrant"
   | "LightMuted";
 
-export type RatioSwatch = {
+export type ColorSwatch = {
+  rgb: number[];
+  hex: string;
+  population: number;
+};
+
+export type RatioSwatch = ColorSwatch & {
   label: SwatchLabel;
-  swatch: ColorSwatch;
   ratio: number;
 };
 
@@ -67,65 +66,65 @@ const ratioInteger = (ratio: number): number => {
 
 const getRatioSwatch = (palette: ColorPalette): RatioSwatch[] => {
   const ratioSwatchList: RatioSwatch[] = [];
+
   if (palette.Vibrant) {
     ratioSwatchList.push({
       label: "Vibrant",
-      swatch: palette.Vibrant,
       ratio: 0,
+      ...palette.Vibrant,
     });
   }
 
   if (palette.Muted) {
     ratioSwatchList.push({
       label: "Muted",
-      swatch: palette.Muted,
       ratio: 0,
+      ...palette.Muted,
     });
   }
 
   if (palette.DarkVibrant) {
     ratioSwatchList.push({
       label: "DarkVibrant",
-      swatch: palette.DarkVibrant,
       ratio: 0,
+      ...palette.DarkVibrant,
     });
   }
 
   if (palette.DarkMuted) {
     ratioSwatchList.push({
       label: "DarkMuted",
-      swatch: palette.DarkMuted,
       ratio: 0,
+      ...palette.DarkMuted,
     });
   }
 
   if (palette.LightVibrant) {
     ratioSwatchList.push({
       label: "LightVibrant",
-      swatch: palette.LightVibrant,
       ratio: 0,
+      ...palette.LightVibrant,
     });
   }
 
   if (palette.LightMuted) {
     ratioSwatchList.push({
       label: "LightMuted",
-      swatch: palette.LightMuted,
       ratio: 0,
+      ...palette.LightMuted,
     });
   }
 
   const totalPopulation = ratioSwatchList.reduce(
     (acc: number, val: RatioSwatch): number => {
-      return acc + val.swatch.population;
+      return acc + val.population;
     },
     0
   );
 
   const calculatedRatioSwatchList = ratioSwatchList.map(
     (ratioSwatch: RatioSwatch): RatioSwatch => {
-      ratioSwatch.ratio =
-        (ratioSwatch.swatch.population / totalPopulation) * 100;
+      ratioSwatch.ratio = (ratioSwatch.population / totalPopulation) * 100;
       return ratioSwatch;
     }
   );
@@ -172,7 +171,7 @@ const getCSSGradientRGBList = (ratioSwatchList: RatioSwatch[]): string[] => {
     }
     cssRGBList.push(
       `rgb(${rgbInteger(
-        ratioSwatch.swatch.rgb
+        ratioSwatch.rgb
       ).toString()}) ${currentStart}% ${currentEnd}%`
     );
   }
