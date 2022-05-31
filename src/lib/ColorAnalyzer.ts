@@ -3,6 +3,22 @@ import Vibrant from "node-vibrant";
 import { Palette, Swatch, Vec3 } from "node-vibrant/lib/color";
 import { Emoji, getEmojis } from "./EmojiParser";
 
+export type SwatchLabel =
+  | "Vibrant"
+  | "Muted"
+  | "DarkVibrant"
+  | "DarkMuted"
+  | "LightVibrant"
+  | "LightMuted";
+
+export type ColorSwatch = {
+  label: SwatchLabel;
+  rgb: number[];
+  hex: string;
+  population: number;
+  ratio: number;
+};
+
 export type VibrantSourceType = "image" | "emoji";
 
 export type VibrantSource = {
@@ -14,36 +30,9 @@ export type VibrantSource = {
 export type VibrantResult = {
   preview: string;
   emoji: Emoji | null;
-  palette: ColorPalette;
+  top: ColorSwatch;
+  swatches: ColorSwatch[];
   source: VibrantSource;
-};
-
-export type ColorPalette = {
-  Vibrant?: ColorSwatch;
-  Muted?: ColorSwatch;
-  DarkVibrant?: ColorSwatch;
-  DarkMuted?: ColorSwatch;
-  LightVibrant?: ColorSwatch;
-  LightMuted?: ColorSwatch;
-};
-
-export type SwatchLabel =
-  | "Vibrant"
-  | "Muted"
-  | "DarkVibrant"
-  | "DarkMuted"
-  | "LightVibrant"
-  | "LightMuted";
-
-export type ColorSwatch = {
-  rgb: number[];
-  hex: string;
-  population: number;
-};
-
-export type RatioSwatch = ColorSwatch & {
-  label: SwatchLabel;
-  ratio: number;
 };
 
 /**
@@ -64,97 +53,73 @@ const ratioInteger = (ratio: number): number => {
   return Math.floor(ratio);
 };
 
-const getRatioSwatch = (palette: ColorPalette): RatioSwatch[] => {
-  const ratioSwatchList: RatioSwatch[] = [];
+const createColorSwatches = (palette: Palette): ColorSwatch[] => {
+  const colorSwatches: ColorSwatch[] = [];
 
   if (palette.Vibrant) {
-    ratioSwatchList.push({
-      label: "Vibrant",
-      ratio: 0,
-      ...palette.Vibrant,
-    });
+    colorSwatches.push(createColorSwatch("Vibrant", palette.Vibrant));
   }
 
   if (palette.Muted) {
-    ratioSwatchList.push({
-      label: "Muted",
-      ratio: 0,
-      ...palette.Muted,
-    });
+    colorSwatches.push(createColorSwatch("Muted", palette.Muted));
   }
 
   if (palette.DarkVibrant) {
-    ratioSwatchList.push({
-      label: "DarkVibrant",
-      ratio: 0,
-      ...palette.DarkVibrant,
-    });
+    colorSwatches.push(createColorSwatch("DarkVibrant", palette.DarkVibrant));
   }
 
   if (palette.DarkMuted) {
-    ratioSwatchList.push({
-      label: "DarkMuted",
-      ratio: 0,
-      ...palette.DarkMuted,
-    });
+    colorSwatches.push(createColorSwatch("DarkMuted", palette.DarkMuted));
   }
 
   if (palette.LightVibrant) {
-    ratioSwatchList.push({
-      label: "LightVibrant",
-      ratio: 0,
-      ...palette.LightVibrant,
-    });
+    colorSwatches.push(createColorSwatch("LightVibrant", palette.LightVibrant));
   }
 
   if (palette.LightMuted) {
-    ratioSwatchList.push({
-      label: "LightMuted",
-      ratio: 0,
-      ...palette.LightMuted,
-    });
+    colorSwatches.push(createColorSwatch("LightMuted", palette.LightMuted));
   }
 
-  const totalPopulation = ratioSwatchList.reduce(
-    (acc: number, val: RatioSwatch): number => {
+  const totalPopulation = colorSwatches.reduce(
+    (acc: number, val: ColorSwatch): number => {
       return acc + val.population;
     },
     0
   );
 
-  const calculatedRatioSwatchList = ratioSwatchList.map(
-    (ratioSwatch: RatioSwatch): RatioSwatch => {
-      ratioSwatch.ratio = (ratioSwatch.population / totalPopulation) * 100;
-      return ratioSwatch;
+  const calculatedColorSwatches = colorSwatches.map(
+    (colorSwatch: ColorSwatch): ColorSwatch => {
+      colorSwatch.ratio = (colorSwatch.population / totalPopulation) * 100;
+      return colorSwatch;
     }
   );
 
-  return calculatedRatioSwatchList;
+  return calculatedColorSwatches;
 };
 
-const getTopRatioSwatch = (ratioSwatchList: RatioSwatch[]): RatioSwatch => {
+const getTopRatioSwatch = (colorSwatches: ColorSwatch[]): ColorSwatch => {
   // 0,4,3,1,0,2,5
-  const withoutZeroRatioSwatchList: RatioSwatch[] = ratioSwatchList.filter(
-    (ratioSwatch: RatioSwatch) => {
-      return ratioSwatch.ratio > 0;
+  const withoutZeroColorSwatches: ColorSwatch[] = colorSwatches.filter(
+    (colorSwatch: ColorSwatch) => {
+      return colorSwatch.ratio > 0;
     }
   );
 
   // 5,4,3,2,1
-  const sortedRatioSwatchList: RatioSwatch[] = withoutZeroRatioSwatchList.sort(
-    (a: RatioSwatch, b: RatioSwatch) => {
+  const sortedColorSwatches: ColorSwatch[] = withoutZeroColorSwatches.sort(
+    (a: ColorSwatch, b: ColorSwatch) => {
       return b.ratio - a.ratio;
     }
   );
 
-  return sortedRatioSwatchList[0];
+  return sortedColorSwatches[0];
 };
 
-const getCSSGradientRGBList = (ratioSwatchList: RatioSwatch[]): string[] => {
+const getCSSGradientRGBList = (colorSwatches: ColorSwatch[]): string[] => {
   // 0,4,3,1,0,2,5
-  const withoutZeroRatioSwatchList: RatioSwatch[] = ratioSwatchList.filter(
-    (ratioSwatch: RatioSwatch) => {
-      return ratioSwatch.ratio > 0;
+  const withoutZeroRatioColorSwatches: ColorSwatch[] = colorSwatches.filter(
+    (colorSwatch: ColorSwatch) => {
+      return colorSwatch.ratio > 0;
     }
   );
 
@@ -162,52 +127,34 @@ const getCSSGradientRGBList = (ratioSwatchList: RatioSwatch[]): string[] => {
   // 開始は常に0
   let currentStart: number = 0;
   let currentEnd: number = 0;
-  for (let i: number = 0; i < withoutZeroRatioSwatchList.length; i++) {
-    const ratioSwatch: RatioSwatch = withoutZeroRatioSwatchList[i];
-    currentEnd += ratioInteger(ratioSwatch.ratio);
-    if (i === withoutZeroRatioSwatchList.length - 1) {
+  for (let i: number = 0; i < withoutZeroRatioColorSwatches.length; i++) {
+    const colorSwatch: ColorSwatch = withoutZeroRatioColorSwatches[i];
+    currentEnd += ratioInteger(colorSwatch.ratio);
+    if (i === withoutZeroRatioColorSwatches.length - 1) {
       // 100%を超えないように、最後は100%
       currentEnd = 100;
     }
     cssRGBList.push(
       `rgb(${rgbInteger(
-        ratioSwatch.rgb
+        colorSwatch.rgb
       ).toString()}) ${currentStart}% ${currentEnd}%`
     );
   }
 
   return cssRGBList;
 };
+
 const convertVec3ToNumberArray = (vec3: Vec3): number[] => {
   return [vec3[0], vec3[1], vec3[2]];
 };
-const convertSwatchToColorSwatch = (swatch: Swatch): ColorSwatch => {
+
+const createColorSwatch = (label: SwatchLabel, swatch: Swatch): ColorSwatch => {
   return {
+    label: label,
     rgb: convertVec3ToNumberArray(swatch.rgb),
     hex: swatch.hex,
     population: swatch.population,
-  };
-};
-const convertPaletteToColorPalette = (palette: Palette): ColorPalette => {
-  return {
-    Vibrant: palette.Vibrant
-      ? convertSwatchToColorSwatch(palette.Vibrant)
-      : undefined,
-    Muted: palette.Muted
-      ? convertSwatchToColorSwatch(palette.Muted)
-      : undefined,
-    DarkVibrant: palette.DarkVibrant
-      ? convertSwatchToColorSwatch(palette.DarkVibrant)
-      : undefined,
-    DarkMuted: palette.DarkMuted
-      ? convertSwatchToColorSwatch(palette.DarkMuted)
-      : undefined,
-    LightVibrant: palette.LightVibrant
-      ? convertSwatchToColorSwatch(palette.LightVibrant)
-      : undefined,
-    LightMuted: palette.LightMuted
-      ? convertSwatchToColorSwatch(palette.LightMuted)
-      : undefined,
+    ratio: 0,
   };
 };
 
@@ -235,13 +182,19 @@ const getVibrantList = async (
     // 絵文字は、画像が64x64と小さいのでクオリティを上げる
     const quality: number = source.type === "image" ? 5 : 1;
 
-    // Using builder
-    const palette = await Vibrant.from(imageURL).quality(quality).getPalette();
+    const palette: Palette = await Vibrant.from(imageURL)
+      .quality(quality)
+      .getPalette();
+
+    const swatches: ColorSwatch[] = createColorSwatches(palette);
+
+    const top: ColorSwatch = getTopRatioSwatch(swatches);
 
     const vibrantResult: VibrantResult = {
       preview: imageURL,
       emoji: emoji,
-      palette: convertPaletteToColorPalette(palette),
+      top: top,
+      swatches: swatches,
       source: source,
     };
 
@@ -251,19 +204,10 @@ const getVibrantList = async (
   return vibrantResultList;
 };
 
-export {
-  rgbInteger,
-  ratioInteger,
-  getRatioSwatch,
-  getTopRatioSwatch,
-  getCSSGradientRGBList,
-  getVibrantList,
-};
+export { rgbInteger, ratioInteger, getCSSGradientRGBList, getVibrantList };
 const ColorAnalyzer = {
   rgbInteger,
   ratioInteger,
-  getRatioSwatch,
-  getTopRatioSwatch,
   getCSSGradientRGBList,
   getVibrantList,
 };

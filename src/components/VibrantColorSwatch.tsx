@@ -1,10 +1,10 @@
-import { ratioInteger, RatioSwatch, rgbInteger } from "@/lib/ColorAnalyzer";
+import { ColorSwatch, ratioInteger, rgbInteger } from "@/lib/ColorAnalyzer";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import Color from "color";
 
 export type VibrantColorSwatchProps = {
-  ratioSwatch: RatioSwatch;
+  swatch: ColorSwatch;
 };
 
 const dynamicStyle = ({ rgb }: { rgb: any }) => {
@@ -83,10 +83,8 @@ const Ratio = styled("span")`
   }
 `;
 
-const VibrantColorSwatch: React.FC<VibrantColorSwatchProps> = ({
-  ratioSwatch,
-}) => {
-  const { label, ratio, rgb, population } = ratioSwatch;
+const VibrantColorSwatch: React.FC<VibrantColorSwatchProps> = ({ swatch }) => {
+  const { label, ratio, rgb, population } = swatch;
 
   // 少数点が多すぎるとテキストが切れるので、数値を切り捨て
   const shortRgb: number[] = rgbInteger(rgb);

@@ -3,10 +3,8 @@ import VibrantColorSwatch from "@/components/VibrantColorSwatch";
 import { mq } from "@/utils/mq";
 import { css } from "@emotion/react";
 import {
+  ColorSwatch,
   getCSSGradientRGBList,
-  getRatioSwatch,
-  getTopRatioSwatch,
-  RatioSwatch,
   rgbInteger,
   VibrantResult,
 } from "@/lib/ColorAnalyzer";
@@ -102,12 +100,9 @@ const JSONViewer = styled("div")`
 `;
 
 const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
-  const { Vibrant, Muted, DarkVibrant, DarkMuted, LightVibrant, LightMuted } =
-    vibrantResult.palette;
-  const ratioSwatchList = getRatioSwatch(vibrantResult.palette);
-  const topRatioSwatch: RatioSwatch = getTopRatioSwatch(ratioSwatchList);
-  const cssGradientRGBList: string[] = getCSSGradientRGBList(ratioSwatchList);
-  const mainColor: string = `rgb(${rgbInteger(topRatioSwatch.rgb).toString()})`;
+  const { swatches, top } = vibrantResult;
+  const cssGradientRGBList: string[] = getCSSGradientRGBList(swatches);
+  const mainColor: string = `rgb(${rgbInteger(top.rgb).toString()})`;
 
   return (
     <Container key={vibrantResult.preview} mainColor={mainColor}>
@@ -127,11 +122,11 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
       </ViewerBlock>
       <DetailBlock>
         <ColorSwatchBlock>
-          {ratioSwatchList.map((ratioSwatch: RatioSwatch) => {
+          {swatches.map((swatch: ColorSwatch) => {
             return (
               <VibrantColorSwatch
-                key={ratioSwatch.label}
-                ratioSwatch={ratioSwatch}
+                key={swatch.label}
+                swatch={swatch}
               ></VibrantColorSwatch>
             );
           })}
