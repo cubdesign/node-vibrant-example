@@ -15,16 +15,12 @@ import DefaultLayout, { Title } from "@/components/layouts/defaultLayout";
 import getSampleVibrantSource from "@/fixtures/sampleData";
 
 type ServerRenderingPageProps = {
-  vibrantResultListString: string;
+  vibrantResultList: VibrantResult[];
 };
 
 const ServerRenderingPage: NextPageWithLayout<ServerRenderingPageProps> = ({
-  vibrantResultListString,
+  vibrantResultList,
 }) => {
-  const vibrantResultList: VibrantResult[] = JSON.parse(
-    vibrantResultListString
-  );
-
   return (
     <>
       <Title>
@@ -69,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
   // console.log(JSON.stringify(vibrantResultList));
   const props: ServerRenderingPageProps = {
-    vibrantResultListString: JSON.stringify(vibrantResultList),
+    vibrantResultList: vibrantResultList,
   };
 
   return {

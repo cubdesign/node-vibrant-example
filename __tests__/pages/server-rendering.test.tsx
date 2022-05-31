@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import ServerRenderingPage from "@/pages/server-rendering";
+import { VibrantResult } from "@/lib/ColorAnalyzer";
 
 describe("ServerRenderingPage", () => {
   it("renders a heading", () => {
-    const vibrantResultList: object = [
+    const vibrantResultList: VibrantResult[] = [
       {
         preview:
           "https://cdn.jsdelivr.net/npm/emoji-datasource-apple@14.0.0/img/apple/64/1f47e.png",
@@ -620,10 +621,8 @@ describe("ServerRenderingPage", () => {
         },
       },
     ];
-    const vibrantResultListString = JSON.stringify(vibrantResultList);
-    render(
-      <ServerRenderingPage vibrantResultListString={vibrantResultListString} />
-    );
+
+    render(<ServerRenderingPage vibrantResultList={vibrantResultList} />);
     expect(screen.getByText(/SSR/)).toBeInTheDocument();
   });
 });
