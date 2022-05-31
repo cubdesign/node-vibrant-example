@@ -1,3 +1,5 @@
+import { VibrantSource } from "@/lib/ColorAnalyzer";
+import { getEmojiListFromString } from "@/lib/EmojiParser";
 import { mq } from "@/utils/mq";
 import styled from "@emotion/styled";
 
@@ -20,8 +22,13 @@ type EmojiInputProps = {
 
 const EmojiInput: React.FC<EmojiInputProps> = ({ value, onChange }) => {
   const onChangeEmojiInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const text = event.target.value.trim();
     if (onChange) {
-      onChange(event.target.value.trim());
+      const emoji = getEmojiListFromString(text)
+        .map((emoji) => emoji)
+        .join("");
+
+      onChange(emoji);
     }
   };
 
