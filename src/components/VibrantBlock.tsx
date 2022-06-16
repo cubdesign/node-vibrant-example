@@ -127,6 +127,7 @@ const VibrantBlock: React.FC<VibrantBlockProps> = ({ vibrantResult }) => {
               <VibrantColorSwatch
                 key={swatch.label}
                 swatch={swatch}
+                isTop={top.label === swatch.label}
               ></VibrantColorSwatch>
             );
           })}
