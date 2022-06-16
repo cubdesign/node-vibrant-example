@@ -7,6 +7,11 @@ import Footer from "@/components/ui/Footer";
 import Header from "@/components/ui/Header";
 import PageLoading from "@/components/ui/PageLoading";
 
+import { googleTagManagerId } from "@/utils/gtm";
+import GoogleTagManager, {
+  GoogleTagManagerId,
+} from "@/components/GoogleTagManager";
+
 type DefaultLayoutProps = {
   title: string;
   description: string;
@@ -75,6 +80,11 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
+
+      <GoogleTagManager
+        googleTagManagerId={googleTagManagerId as GoogleTagManagerId}
+      />
+
       <Main>{loading ? <PageLoading /> : children}</Main>
       <Footer />
     </Container>
