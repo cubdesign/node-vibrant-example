@@ -56,7 +56,10 @@ const handler = async (
 
   const result = [];
   for (let i = 0; i < vibrantResultList.length; i++) {
-    result.push({ color: vibrantResultList[i].top.hex });
+    result.push({
+      emoji: vibrantResultList[i].emoji?.text,
+      color: vibrantResultList[i].top.hex,
+    });
   }
   res.status(200).json({ result: result });
 };

@@ -95,7 +95,7 @@ describe("pages/api/emoji", () => {
         };
         const res = await fetch(customInit);
         await expect(res.json()).resolves.toStrictEqual({
-          result: [{ color: "#7c5cac" }],
+          result: [{ emoji: "👾", color: "#7c5cac" }],
         });
       },
     });
@@ -122,7 +122,10 @@ describe("pages/api/emoji", () => {
         };
         const res = await fetch(customInit);
         await expect(res.json()).resolves.toStrictEqual({
-          result: [{ color: "#7c5cac" }, { color: "#fc9387" }],
+          result: [
+            { emoji: "👾", color: "#7c5cac" },
+            { emoji: "🍎", color: "#fc9387" },
+          ],
         });
       },
     });
