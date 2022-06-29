@@ -74,7 +74,7 @@ describe("pages/api/emoji", () => {
     });
   });
 
-  it("絵文字を渡したら特徴色を返す", async () => {
+  it("絵文字を渡したら特徴色を返す(一つ)", async () => {
     await testApiHandler({
       requestPatcher: (req) => {
         const param = {
@@ -94,7 +94,36 @@ describe("pages/api/emoji", () => {
           },
         };
         const res = await fetch(customInit);
-        await expect(res.json()).resolves.toStrictEqual({ color: "#7c5cac" });
+        await expect(res.json()).resolves.toStrictEqual({
+          result: [{ color: "#7c5cac" }],
+        });
+      },
+    });
+  });
+
+  it("絵文字を渡したら特徴色を返す(複数)", async () => {
+    await testApiHandler({
+      requestPatcher: (req) => {
+        const param = {
+          emoji: "👾🍎",
+          ua: UA.MacBook_12_Chrome,
+        };
+        const query = new URLSearchParams(param);
+        req.url = `/api/emoji?${query}`;
+      },
+
+      handler,
+      test: async ({ fetch }) => {
+        const customInit: RequestInit = {
+          method: "GET",
+          headers: {
+            "content-type": "application/json", // Must use correct content type
+          },
+        };
+        const res = await fetch(customInit);
+        await expect(res.json()).resolves.toStrictEqual({
+          result: [{ color: "#7c5cac" }, { color: "#fc9387" }],
+        });
       },
     });
   });

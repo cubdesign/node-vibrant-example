@@ -8,7 +8,7 @@ import { getEmojiListFromString } from "@/lib/EmojiParser";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type ResponseData = {
-  color?: string;
+  result?: { color: string }[];
   error?: {
     message: string;
   };
@@ -35,12 +35,16 @@ const handler = async (
     return;
   }
 
-  const vibrantSourceList: VibrantSource[] = [
-    {
-      emoji: emoji,
+  const emojis = getEmojiListFromString(emoji);
+
+  const vibrantSourceList: VibrantSource[] = [];
+
+  for (let i = 0; i < emojis.length; i++) {
+    vibrantSourceList.push({
+      emoji: emojis[i],
       type: "emoji",
-    },
-  ];
+    });
+  }
 
   const origin = "http://localhost:3000";
 
@@ -50,7 +54,11 @@ const handler = async (
     ua
   );
 
-  res.status(200).json({ color: vibrantResultList[0].top.hex });
+  const result = [];
+  for (let i = 0; i < vibrantResultList.length; i++) {
+    result.push({ color: vibrantResultList[i].top.hex });
+  }
+  res.status(200).json({ result: result });
 };
 
 export default handler;
