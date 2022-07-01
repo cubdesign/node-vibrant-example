@@ -80,6 +80,8 @@ const handler = async (
       color: vibrantResultList[i].top.hex,
     });
   }
+  // ブラウサーのキャッシュを１時間に設定する
+  res.setHeader("Cache-Control", "s-maxage=3600");
   res.status(200).json({ result: result });
 };
 
