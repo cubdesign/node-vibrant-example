@@ -81,7 +81,7 @@ const handler = async (
     });
   }
   // ブラウサーのキャッシュを１時間に設定する
-  res.setHeader("Cache-Control", "s-maxage=3600");
+  res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
   res.status(200).json({ result: result });
 };
 
