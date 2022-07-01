@@ -7,6 +7,8 @@ import {
 import { getEmojiListFromString } from "@/lib/EmojiParser";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import Cors from "cors";
+
 type ResponseData = {
   result?: { color: string }[];
   error?: {
@@ -14,10 +16,27 @@ type ResponseData = {
   };
 };
 
+// TODO: middleware type ?
+const initMiddleware = (middleware: any) => {
+  return (req: NextApiRequest, res: NextApiResponse) =>
+    new Promise((resolve, reject) => {
+      // TODO: result type ?
+      middleware(req, res, (result: any) => {
+        if (result instanceof Error) {
+          return reject(result);
+        }
+        return resolve(result);
+      });
+    });
+};
+
+const cors = initMiddleware(Cors({ methods: ["OPTION", "GET"] }));
+
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) => {
+  await cors(req, res);
   const emoji: string = req.query.emoji ? (req.query.emoji as string) : "";
   if (emoji === "") {
     res.status(400).json({ error: { message: "No emoji provided" } });
